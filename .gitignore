@@ -1,0 +1,30 @@
+# Dependencies
+/vendor/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PHP tools cache
+.php-cs-fixer.cache
+.phpunit.result.cache
+/phpstan-baseline.neon
+
+# Build artifacts
+/var/
+/.Build/
+
+# Claude Code (keep docs/, rules/, settings.json)
+.claude/*
+!.claude/docs/
+!.claude/rules/
+!.claude/settings.json
+
+# Generated flipbook pages (converted PDFs)
+/Resources/Public/Generated/

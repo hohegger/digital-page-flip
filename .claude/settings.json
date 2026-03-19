@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:docs.typo3.org)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:gitlab.com)",
+      "Read(*)",
+      "Search(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "Edit(*)",
+      "Write(*)",
+      "Bash(git:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(wc:*)"
+    ],
+    "deny": [
+      "Bash(git commit:*)"
+    ]
+  }
+}
