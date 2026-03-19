@@ -1,0 +1,20 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Kit\DigitalPageFlip\:
+    resource: '../Classes/*'
+
+  Kit\DigitalPageFlip\EventListener\AfterFileAddedListener:
+    tags:
+      - name: event.listener
+        identifier: 'digital-page-flip/after-file-added'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFileAddedEvent
+
+  Kit\DigitalPageFlip\Command\ConvertPdfCommand:
+    tags:
+      - name: console.command
+        command: 'digitalpageflip:convert'
+        description: 'Convert PDF files of flipbook records to page images'

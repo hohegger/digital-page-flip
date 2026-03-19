@@ -1,0 +1,32 @@
+plugin.tx_digitalpageflip_flipbook = USER
+plugin.tx_digitalpageflip_flipbook {
+  userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+  extensionName = DigitalPageFlip
+  pluginName = Flipbook
+  vendorName = Kit
+}
+
+tt_content.list.20.digitalpageflip_flipbook =< plugin.tx_digitalpageflip_flipbook
+
+plugin.tx_digitalpageflip {
+  view {
+    templateRootPaths.0 = EXT:digital_page_flip/Resources/Private/Templates/
+    partialRootPaths.0 = EXT:digital_page_flip/Resources/Private/Partials/
+    layoutRootPaths.0 = EXT:digital_page_flip/Resources/Private/Layouts/
+  }
+
+  persistence {
+    storagePid = {$plugin.tx_digitalpageflip.persistence.storagePid}
+  }
+
+  settings {
+    ghostscriptPath = {$plugin.tx_digitalpageflip.settings.ghostscriptPath}
+    imageResolution = {$plugin.tx_digitalpageflip.settings.imageResolution}
+    webpQuality = {$plugin.tx_digitalpageflip.settings.webpQuality}
+    maxFileSize = {$plugin.tx_digitalpageflip.settings.maxFileSize}
+    flipbook.width = {$plugin.tx_digitalpageflip.settings.flipbook.width}
+    flipbook.height = {$plugin.tx_digitalpageflip.settings.flipbook.height}
+    flipbook.showCover = {$plugin.tx_digitalpageflip.settings.flipbook.showCover}
+    flipbook.swipeDistance = {$plugin.tx_digitalpageflip.settings.flipbook.swipeDistance}
+  }
+}

@@ -1,0 +1,48 @@
+#!/bin/bash
+
+## Description: Install TYPO3 and set up the development environment
+## Usage: typo3-setup
+## Example: ddev typo3-setup
+
+set -e
+
+echo "==> Installing Composer dependencies..."
+composer install --no-interaction
+
+# Ensure DB credentials are available for CLI commands
+mkdir -p config/system
+if [ ! -f config/system/additional.php ]; then
+    echo "==> Copying additional.php with DB credentials..."
+    cp /mnt/ddev_config/additional.php config/system/additional.php
+fi
+
+# Check if TYPO3 is already set up
+if [ -f "config/system/settings.php" ]; then
+    echo "==> TYPO3 already set up, skipping initial setup..."
+else
+    echo "==> Setting up TYPO3..."
+    .Build/bin/typo3 setup \
+        --driver=mysqli \
+        --host=db \
+        --port=3306 \
+        --dbname=db \
+        --username=db \
+        --password=db \
+        --admin-username=admin \
+        --admin-user-password='Password1!' \
+        --admin-email=admin@example.com \
+        --project-name="Digital Page Flip" \
+        --no-interaction \
+        --server-type=apache \
+        --force
+fi
+
+echo "==> Flushing caches..."
+.Build/bin/typo3 cache:flush
+
+echo ""
+echo "================================================"
+echo "  TYPO3 is ready!"
+echo "  Backend: https://${DDEV_HOSTNAME}/typo3"
+echo "  User: admin / Password1!"
+echo "================================================"

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="messages" date="2026-03-19T00:00:00Z" product-name="digital_page_flip">
+        <header/>
+        <body>
+            <trans-unit id="flipbook.view" resname="flipbook.view">
+                <source>Katalog ansehen</source>
+            </trans-unit>
+            <trans-unit id="flipbook.list.title" resname="flipbook.list.title">
+                <source>Kataloge</source>
+            </trans-unit>
+            <trans-unit id="flipbook.loading" resname="flipbook.loading">
+                <source>Katalog wird geladen…</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

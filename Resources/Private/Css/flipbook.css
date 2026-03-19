@@ -1,0 +1,143 @@
+/* ==========================================================================
+   Flipbook Viewer
+   ========================================================================== */
+
+:root {
+    --flipbook-bg: #1a1a2e;
+    --flipbook-stage-bg: #16213e;
+    --flipbook-controls-bg: rgba(0, 0, 0, 0.4);
+    --flipbook-btn-bg: rgba(255, 255, 255, 0.1);
+    --flipbook-btn-hover-bg: rgba(255, 255, 255, 0.2);
+    --flipbook-text: #e0e0e0;
+    --flipbook-radius: 8px;
+    --flipbook-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    --flipbook-max-width: 1200px;
+}
+
+/* Viewer wrapper */
+.flipbook-viewer {
+    background: var(--flipbook-bg);
+    padding-block: clamp(1.5rem, 4vw, 3rem);
+    padding-inline: clamp(1rem, 3vw, 2rem);
+}
+
+/* Stage: centers the book with shadow */
+.flipbook-viewer__stage {
+    max-width: var(--flipbook-max-width);
+    margin-inline: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding-block: 1rem;
+}
+
+.flipbook-viewer__book {
+    box-shadow: var(--flipbook-shadow);
+    border-radius: 2px;
+}
+
+/* StPageFlip canvas styling */
+.flipbook-viewer__book canvas {
+    display: block;
+}
+
+/* Controls bar */
+.flipbook-viewer__controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    max-width: var(--flipbook-max-width);
+    margin-inline: auto;
+    margin-block-start: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--flipbook-controls-bg);
+    border-radius: var(--flipbook-radius);
+    backdrop-filter: blur(8px);
+}
+
+/* Buttons */
+.flipbook-viewer__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    background: var(--flipbook-btn-bg);
+    color: var(--flipbook-text);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.flipbook-viewer__btn:hover {
+    background: var(--flipbook-btn-hover-bg);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.flipbook-viewer__btn:focus-visible {
+    outline: 2px solid #6c63ff;
+    outline-offset: 2px;
+}
+
+.flipbook-viewer__btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+/* Page counter */
+.flipbook-viewer__pager {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--flipbook-text);
+    min-width: 5ch;
+    text-align: center;
+    user-select: none;
+}
+
+/* ==========================================================================
+   List View
+   ========================================================================== */
+
+.digital-page-flip-list {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.digital-page-flip-list__item {
+    padding: 1rem;
+}
+
+.digital-page-flip-list__item h3 {
+    margin: 0 0 0.5rem;
+}
+
+.digital-page-flip-list__item p {
+    margin: 0 0 1rem;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .flipbook-viewer__stage {
+        min-height: 40vh;
+    }
+
+    .flipbook-viewer__controls {
+        gap: 0.75rem;
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .flipbook-viewer__btn {
+        transition: none;
+    }
+}

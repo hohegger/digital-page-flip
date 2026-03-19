@@ -1,0 +1,47 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:kit="http://typo3.org/ns/Kit/DigitalPageFlip/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:layout name="Default" />
+
+<f:section name="Main">
+    <section class="flipbook-viewer" aria-label="{flipbook.title}">
+        <div class="flipbook-viewer__stage">
+            <div class="flipbook-viewer__book"
+                 id="flipbook-{flipbook.uid}"
+                 data-flipbook-pages="{kit:flipbookData(flipbook: flipbook)}"
+                 data-flipbook-width="{settings.flipbook.width}"
+                 data-flipbook-height="{settings.flipbook.height}"
+                 data-flipbook-show-cover="{settings.flipbook.showCover}"
+                 data-flipbook-swipe-distance="{settings.flipbook.swipeDistance}"
+            >
+            </div>
+        </div>
+
+        <nav class="flipbook-viewer__controls" aria-label="Katalog-Navigation">
+            <button class="flipbook-viewer__btn flipbook-viewer__btn--prev"
+                    type="button"
+                    data-flipbook-prev="{flipbook.uid}"
+                    aria-label="Vorherige Seite">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+
+            <span class="flipbook-viewer__pager" data-flipbook-pager="{flipbook.uid}" aria-live="polite">
+                <span data-flipbook-current>1</span> / <span data-flipbook-total>{flipbook.pageCount}</span>
+            </span>
+
+            <button class="flipbook-viewer__btn flipbook-viewer__btn--next"
+                    type="button"
+                    data-flipbook-next="{flipbook.uid}"
+                    aria-label="Nächste Seite">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </nav>
+    </section>
+</f:section>
+
+</html>

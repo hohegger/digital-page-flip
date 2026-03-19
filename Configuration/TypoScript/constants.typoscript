@@ -1,0 +1,25 @@
+plugin.tx_digitalpageflip {
+  persistence {
+    storagePid = 0
+  }
+
+  settings {
+    # Ghostscript path
+    ghostscriptPath = /usr/bin/gs
+
+    # Image resolution for PDF conversion (DPI)
+    imageResolution = 150
+
+    # WebP quality (0-100)
+    webpQuality = 85
+
+    # Maximum PDF file size in MB
+    maxFileSize = 50
+
+    # StPageFlip defaults (width/height = einzelne Seite, Hochformat)
+    flipbook.width = 550
+    flipbook.height = 880
+    flipbook.showCover = 1
+    flipbook.swipeDistance = 30
+  }
+}

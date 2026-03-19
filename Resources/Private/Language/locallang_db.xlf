@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="messages" date="2026-03-19T00:00:00Z" product-name="digital_page_flip">
+        <header/>
+        <body>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook" resname="tx_digitalpageflip_domain_model_flipbook">
+                <source>Flipbook</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.title" resname="tx_digitalpageflip_domain_model_flipbook.title">
+                <source>Titel</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.description" resname="tx_digitalpageflip_domain_model_flipbook.description">
+                <source>Beschreibung</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.pdf_file" resname="tx_digitalpageflip_domain_model_flipbook.pdf_file">
+                <source>PDF-Datei</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.pages" resname="tx_digitalpageflip_domain_model_flipbook.pages">
+                <source>Seiten</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.page_count" resname="tx_digitalpageflip_domain_model_flipbook.page_count">
+                <source>Seitenanzahl</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.conversion_status" resname="tx_digitalpageflip_domain_model_flipbook.conversion_status">
+                <source>Konvertierungsstatus</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.conversion_status.pending" resname="tx_digitalpageflip_domain_model_flipbook.conversion_status.pending">
+                <source>Ausstehend</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.conversion_status.processing" resname="tx_digitalpageflip_domain_model_flipbook.conversion_status.processing">
+                <source>Wird verarbeitet</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.conversion_status.completed" resname="tx_digitalpageflip_domain_model_flipbook.conversion_status.completed">
+                <source>Abgeschlossen</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.conversion_status.error" resname="tx_digitalpageflip_domain_model_flipbook.conversion_status.error">
+                <source>Fehler</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.publish_date" resname="tx_digitalpageflip_domain_model_flipbook.publish_date">
+                <source>Veröffentlichungsdatum</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_page" resname="tx_digitalpageflip_domain_model_page">
+                <source>Seite</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_page.page_number" resname="tx_digitalpageflip_domain_model_page.page_number">
+                <source>Seitennummer</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_page.image" resname="tx_digitalpageflip_domain_model_page.image">
+                <source>Bild (WebP)</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_page.image_fallback" resname="tx_digitalpageflip_domain_model_page.image_fallback">
+                <source>Fallback-Bild (PNG)</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_page.sorting" resname="tx_digitalpageflip_domain_model_page.sorting">
+                <source>Sortierung</source>
+            </trans-unit>
+            <trans-unit id="plugin.title" resname="plugin.title">
+                <source>Digital Page Flip</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

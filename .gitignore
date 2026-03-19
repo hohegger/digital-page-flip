@@ -1,30 +1,33 @@
 # Dependencies
-/vendor/
+.Build/
+node_modules/
+
+# Build output
+Resources/Public/Build/
+
+# DDEV (generated files)
+.ddev/.ddev-docker-compose-base.yaml
+.ddev/.ddev-docker-compose-full.yaml
+.ddev/.gitignore
+.ddev/.homeadditions/
+.ddev/.sso-config/
+.ddev/db_snapshots/
+.ddev/sequelpro.spf
+.ddev/.webimageBuild/
+.ddev/mutagen/
+.ddev/xhprof/
+
+# TYPO3 runtime
+config/
+var/
+composer.lock
 
 # IDE
 .idea/
 .vscode/
-*.swp
-*.swo
 
 # OS
 .DS_Store
-Thumbs.db
 
-# PHP tools cache
+# PHP CS Fixer cache
 .php-cs-fixer.cache
-.phpunit.result.cache
-/phpstan-baseline.neon
-
-# Build artifacts
-/var/
-/.Build/
-
-# Claude Code (keep docs/, rules/, settings.json)
-.claude/*
-!.claude/docs/
-!.claude/rules/
-!.claude/settings.json
-
-# Generated flipbook pages (converted PDFs)
-/Resources/Public/Generated/

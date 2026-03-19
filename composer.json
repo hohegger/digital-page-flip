@@ -1,0 +1,72 @@
+{
+    "name": "kit/digital-page-flip",
+    "description": "TYPO3 extension to convert PDF flyers into browsable online flipbook catalogs using StPageFlip.",
+    "license": "GPL-2.0-or-later",
+    "type": "typo3-cms-extension",
+    "authors": [
+        {
+            "name": "Kit",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "typo3/cms-core": "^12.4",
+        "typo3/cms-extbase": "^12.4",
+        "typo3/cms-fluid": "^12.4",
+        "typo3/cms-fluid-styled-content": "^12.4"
+    },
+    "require-dev": {
+        "typo3/cms-backend": "^12.4",
+        "typo3/cms-frontend": "^12.4",
+        "typo3/cms-install": "^12.4",
+        "typo3/cms-filelist": "^12.4",
+        "typo3/cms-tstemplate": "^12.4",
+        "typo3/cms-lowlevel": "^12.4",
+        "typo3/cms-info": "^12.4",
+        "typo3/coding-standards": "^0.8",
+        "phpstan/phpstan": "^1.10",
+        "saschaegerer/phpstan-typo3": "^1.9",
+        "ssch/typo3-rector": "^1.0",
+        "phpunit/phpunit": "^10.5",
+        "typo3/testing-framework": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kit\\DigitalPageFlip\\": "Classes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kit\\DigitalPageFlip\\Tests\\": "Tests/"
+        }
+    },
+    "config": {
+        "vendor-dir": ".Build/vendor",
+        "bin-dir": ".Build/bin",
+        "allow-plugins": {
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
+        }
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "digital_page_flip",
+            "web-dir": ".Build/public"
+        }
+    },
+    "scripts": {
+        "ci:php:cs": "php-cs-fixer fix --dry-run --diff",
+        "ci:php:cs:fix": "php-cs-fixer fix",
+        "ci:php:stan": "phpstan analyse --memory-limit=2G",
+        "ci:php:rector": "rector process --dry-run",
+        "ci:php:unit": "phpunit --testsuite Unit",
+        "ci:php:functional": "phpunit --testsuite Functional",
+        "ci:all": [
+            "@ci:php:cs",
+            "@ci:php:stan",
+            "@ci:php:rector",
+            "@ci:php:unit"
+        ]
+    }
+}

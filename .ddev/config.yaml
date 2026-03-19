@@ -1,0 +1,21 @@
+name: digital-page-flip
+type: typo3
+docroot: .Build/public
+php_version: "8.2"
+webserver_type: apache-fpm
+database:
+  type: mysql
+  version: "8.0"
+composer_version: "2"
+nodejs_version: "22"
+xdebug_enabled: false
+use_dns_when_possible: true
+router_http_port: "80"
+router_https_port: "443"
+web_environment:
+  - PATH=/var/www/html/.Build/bin:$PATH
+  - TYPO3_CONTEXT=Development
+  - typo3DatabaseHost=db
+  - typo3DatabaseName=db
+  - typo3DatabasePassword=db
+  - typo3DatabaseUsername=db

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+## Description: Build frontend assets (Vite)
+## Usage: build
+## Example: ddev build
+
+echo "==> Installing npm dependencies..."
+npm ci
+
+echo "==> Building frontend assets..."
+npm run build
+
+echo "==> Done! Assets in Resources/Public/Build/"
