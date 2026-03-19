@@ -1,2 +1,3 @@
 - [feedback_no_trial_and_error.md](feedback_no_trial_and_error.md) — User expects thoroughly verified solutions, no trial-and-error
 - [feedback_typo3_v12_cli.md](feedback_typo3_v12_cli.md) — TYPO3 v12 CLI specifics for Composer-based installations
+- [feedback_no_coauthored.md](feedback_no_coauthored.md) — Never add Co-Authored-By to commit messages

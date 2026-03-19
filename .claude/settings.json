@@ -19,8 +19,6 @@
             "Bash(ddev mysql:*)",
             "Bash(grep:*)"
         ],
-        "deny": [
-            "Bash(git commit:*)"
-        ]
+        "deny": []
     }
 }
