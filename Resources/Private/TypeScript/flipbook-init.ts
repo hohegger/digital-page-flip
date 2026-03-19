@@ -10,20 +10,42 @@ document.querySelectorAll<HTMLElement>('.flipbook-viewer__book').forEach((contai
   const uid = container.id.replace('flipbook-', '');
   const width = parseInt(container.dataset.flipbookWidth || '550', 10);
   const height = parseInt(container.dataset.flipbookHeight || '880', 10);
-  const showCover = container.dataset.flipbookShowCover !== '0';
   const swipeDistance = parseInt(container.dataset.flipbookSwipeDistance || '30', 10);
+  const aspectRatio = height / width;
 
   const isMobile = window.innerWidth < 768;
+
+  // Create DOM-based pages for native browser image rendering
+  pages.forEach((src, index) => {
+    const pageEl = document.createElement('div');
+    pageEl.className = 'flipbook-viewer__page';
+
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = `Seite ${index + 1}`;
+    img.loading = index < 4 ? 'eager' : 'lazy';
+    img.draggable = false;
+
+    pageEl.appendChild(img);
+    container.appendChild(pageEl);
+  });
+
+  // Calculate max dimensions from available space
+  const stage = container.closest('.flipbook-viewer__stage') as HTMLElement | null;
+  const availableWidth = stage ? stage.clientWidth : window.innerWidth;
+  const pagesVisible = isMobile ? 1 : 2;
+  const maxPageWidth = Math.floor(availableWidth / pagesVisible);
+  const maxPageHeight = Math.floor(maxPageWidth * aspectRatio);
 
   const pageFlip = new PageFlip(container, {
     width,
     height,
     size: 'stretch' as any,
     minWidth: 280,
-    maxWidth: width,
+    maxWidth: maxPageWidth,
     minHeight: 400,
-    maxHeight: height,
-    showCover,
+    maxHeight: maxPageHeight,
+    showCover: true,
     mobileScrollSupport: true,
     swipeDistance,
     maxShadowOpacity: 0.5,
@@ -36,7 +58,29 @@ document.querySelectorAll<HTMLElement>('.flipbook-viewer__book').forEach((contai
     clickEventForward: true,
   });
 
-  pageFlip.loadFromImages(pages);
+  // Load from DOM elements → native browser rendering quality
+  const pageElements = container.querySelectorAll('.flipbook-viewer__page');
+  pageFlip.loadFromHTML(pageElements as NodeListOf<HTMLElement>);
+
+  // Override: force ALL pages to soft density (showCover sets first/last to hard)
+  try {
+    const flipPages = (pageFlip as any).flipController?.pages
+      ?? (pageFlip as any).pages
+      ?? (pageFlip as any).pageCollection?.pages;
+
+    if (flipPages) {
+      const allPages = typeof flipPages.getPages === 'function' ? flipPages.getPages() : flipPages;
+      if (Array.isArray(allPages)) {
+        allPages.forEach((p: any) => {
+          if (typeof p.setDensity === 'function') {
+            p.setDensity('soft');
+          }
+        });
+      }
+    }
+  } catch (_) {
+    // Graceful fallback: if internal API changes, pages stay as-is
+  }
 
   // Navigation
   const viewer = container.closest('.flipbook-viewer');

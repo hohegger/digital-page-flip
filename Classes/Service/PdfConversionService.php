@@ -19,8 +19,8 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 final class PdfConversionService
 {
     private const DEFAULT_GS_PATH = '/usr/bin/gs';
-    private const DEFAULT_RESOLUTION = 150;
-    private const DEFAULT_WEBP_QUALITY = 85;
+    private const DEFAULT_RESOLUTION = 300;
+    private const DEFAULT_WEBP_QUALITY = 90;
     private const GS_TIMEOUT_SECONDS = 120;
     private const TARGET_FOLDER_PREFIX = 'user_upload/tx_digitalpageflip/flipbook_';
 
@@ -59,7 +59,7 @@ final class PdfConversionService
             $tempDir = $this->createTempDirectory();
 
             $gsPath = $this->resolveGhostscriptPath($settings);
-            $resolution = (int) ($settings['pdfResolution'] ?? self::DEFAULT_RESOLUTION);
+            $resolution = (int) ($settings['imageResolution'] ?? self::DEFAULT_RESOLUTION);
             $webpQuality = (int) ($settings['webpQuality'] ?? self::DEFAULT_WEBP_QUALITY);
 
             $pageCount = $this->executeGhostscript($gsPath, $pdfLocalPath, $tempDir, $resolution);
@@ -99,13 +99,11 @@ final class PdfConversionService
                 $this->convertToWebP($pngPath, $webpPath, $webpQuality);
 
                 $webpFile = $this->registerFileInFal($webpPath, $targetFolder, $webpFileName);
-                $pngFile = $this->registerFileInFal($pngPath, $targetFolder, $pngFileName);
 
                 $page = new Page();
                 $page->setPageNumber($i);
                 $page->setSorting($i);
                 $page->setImage($this->createFileReference($webpFile));
-                $page->setImageFallback($this->createFileReference($pngFile));
 
                 $flipbook->addPage($page);
             }

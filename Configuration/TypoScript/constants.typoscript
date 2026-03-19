@@ -8,10 +8,10 @@ plugin.tx_digitalpageflip {
     ghostscriptPath = /usr/bin/gs
 
     # Image resolution for PDF conversion (DPI)
-    imageResolution = 150
+    imageResolution = 300
 
     # WebP quality (0-100)
-    webpQuality = 85
+    webpQuality = 90
 
     # Maximum PDF file size in MB
     maxFileSize = 50
