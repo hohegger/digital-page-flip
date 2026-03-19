@@ -68,6 +68,8 @@ final class PdfConversionService
                 throw new \RuntimeException('Ghostscript produced no output pages.', 1710000002);
             }
 
+            $this->normalizePageDimensions($tempDir, $pageCount);
+
             $storage = $this->storageRepository->getDefaultStorage();
             if ($storage === null) {
                 throw new \RuntimeException('No default FAL storage available.', 1710000003);
@@ -192,6 +194,54 @@ final class PdfConversionService
         $generatedFiles = glob($outputDir . '/page_*.png');
 
         return $generatedFiles !== false ? count($generatedFiles) : 0;
+    }
+
+    /**
+     * Normalizes all generated PNGs to the dimensions of the first page.
+     * PDFs can have pages with different sizes — this ensures uniform flipbook rendering.
+     */
+    private function normalizePageDimensions(string $outputDir, int $pageCount): void
+    {
+        $firstPagePath = $outputDir . '/page_001.png';
+        if (!file_exists($firstPagePath)) {
+            return;
+        }
+
+        $size = getimagesize($firstPagePath);
+        if ($size === false) {
+            return;
+        }
+
+        $targetWidth = $size[0];
+        $targetHeight = $size[1];
+
+        for ($i = 2; $i <= $pageCount; $i++) {
+            $pagePath = sprintf('%s/page_%03d.png', $outputDir, $i);
+            if (!file_exists($pagePath)) {
+                continue;
+            }
+
+            $pageSize = getimagesize($pagePath);
+            if ($pageSize === false || ($pageSize[0] === $targetWidth && $pageSize[1] === $targetHeight)) {
+                continue;
+            }
+
+            $command = sprintf(
+                'convert %s -resize %dx%d! %s 2>&1',
+                escapeshellarg($pagePath),
+                $targetWidth,
+                $targetHeight,
+                escapeshellarg($pagePath)
+            );
+
+            exec($command);
+
+            $this->logger->info('Normalized page dimensions.', [
+                'page' => $i,
+                'from' => $pageSize[0] . 'x' . $pageSize[1],
+                'to' => $targetWidth . 'x' . $targetHeight,
+            ]);
+        }
     }
 
     /**
