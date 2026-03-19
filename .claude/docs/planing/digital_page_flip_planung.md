@@ -106,7 +106,7 @@ Diese Punkte sind als **wichtige Abhängigkeit** verankert:
 - [x] Detaillierte Extension-Architektur erstellen — ✅ siehe `digital_page_flip_architektur.md`
 - [x] KI-Integration planen (CLAUDE.md + .claude/rules/) — ✅ siehe `digital_page_flip_claude_integration.md`
 - [x] StPageFlip Asset-Pipeline planen — ✅ npm + Vite, siehe Architektur Abschnitt 4
-- [ ] Erste Entwicklungsphase: Backend-Modul + PDF-Konvertierung
-- [ ] Zweite Entwicklungsphase: Frontend-Plugin + Flipbook-Rendering
+- [x] Erste Entwicklungsphase: Backend-Modul + PDF-Konvertierung — ✅ fertig (2026-03-19)
+- [x] Zweite Entwicklungsphase: Frontend-Plugin + Flipbook-Rendering — ✅ fertig (2026-03-19)
 - [ ] Testing & Sicherheitsaudit
 - [ ] Migration auf TYPO3 v14 nach Relaunch
