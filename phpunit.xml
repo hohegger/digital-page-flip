@@ -13,6 +13,9 @@
             <directory>Tests/Functional</directory>
         </testsuite>
     </testsuites>
+    <extensions>
+        <bootstrap class="DG\BypassFinals\PHPUnitExtension"/>
+    </extensions>
     <source>
         <include>
             <directory suffix=".php">Classes</directory>

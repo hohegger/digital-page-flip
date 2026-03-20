@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kit\DigitalPageFlip\Domain\Model;
 
+use DateTime;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
@@ -34,7 +35,7 @@ final class Flipbook extends AbstractEntity
 
     protected int $conversionStatus = self::STATUS_PENDING;
 
-    protected ?\DateTime $publishDate = null;
+    protected ?DateTime $publishDate = null;
 
     public function __construct()
     {
@@ -122,12 +123,12 @@ final class Flipbook extends AbstractEntity
         $this->conversionStatus = $conversionStatus;
     }
 
-    public function getPublishDate(): ?\DateTime
+    public function getPublishDate(): ?DateTime
     {
         return $this->publishDate;
     }
 
-    public function setPublishDate(?\DateTime $publishDate): void
+    public function setPublishDate(?DateTime $publishDate): void
     {
         $this->publishDate = $publishDate;
     }

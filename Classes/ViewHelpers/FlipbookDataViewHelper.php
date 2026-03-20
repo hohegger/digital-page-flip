@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kit\DigitalPageFlip\ViewHelpers;
 
+use Closure;
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Domain\Model\Page;
 use TYPO3\CMS\Core\Utility\PathUtility;
@@ -21,8 +22,8 @@ final class FlipbookDataViewHelper extends AbstractViewHelper
 
     public static function renderStatic(
         array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext,
     ): string {
         /** @var Flipbook $flipbook */
         $flipbook = $arguments['flipbook'];
@@ -34,7 +35,10 @@ final class FlipbookDataViewHelper extends AbstractViewHelper
             if ($image !== null) {
                 $originalResource = $image->getOriginalResource();
                 if ($originalResource !== null) {
-                    $pages[] = PathUtility::getAbsoluteWebPath($originalResource->getPublicUrl());
+                    $publicUrl = $originalResource->getPublicUrl();
+                    if ($publicUrl !== null) {
+                        $pages[] = PathUtility::getAbsoluteWebPath($publicUrl);
+                    }
                 }
             }
         }

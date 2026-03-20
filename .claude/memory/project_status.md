@@ -23,9 +23,10 @@ type: project
 - Vite Build-Pipeline (TypeScript + CSS)
 - Viewer füllt Viewport (kein Scrollen)
 
-### Phase 3: Testing & QA — OFFEN
+### Phase 3: Testing & QA — IN ARBEIT
+- Unit Tests implementiert (2026-03-20): FlipbookTest, PageTest, PdfConversionServiceTest, FlipbookDataViewHelperTest, ConvertPdfCommandTest
+- dg/bypass-finals als Dev-Dependency für Mocking finaler Klassen
 - QA-Pipeline (`composer ci:all`) noch nicht ausgeführt
-- Unit Tests: nur Stubs vorhanden
 - Functional Tests: nur Stubs vorhanden
 - Kein formales Sicherheitsaudit
 

@@ -9,21 +9,18 @@ use Kit\DigitalPageFlip\Domain\Repository\FlipbookRepository;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 final class FlipbookController extends ActionController
 {
     private const MANIFEST_PATH = 'EXT:digital_page_flip/Resources/Public/Build/.vite/manifest.json';
-
     public function __construct(
         private readonly FlipbookRepository $flipbookRepository,
         private readonly AssetCollector $assetCollector,
     ) {}
-
     public function listAction(): ResponseInterface
     {
-        $flipbookUid = (int)($this->settings['flipbookUid'] ?? 0);
+        $flipbookUid = (int) ($this->settings['flipbookUid'] ?? 0);
 
         if ($flipbookUid > 0) {
             $flipbook = $this->flipbookRepository->findByUid($flipbookUid);
@@ -37,12 +34,10 @@ final class FlipbookController extends ActionController
 
         return $this->htmlResponse();
     }
-
     public function showAction(Flipbook $flipbook): ResponseInterface
     {
         return $this->showFlipbook($flipbook);
     }
-
     private function showFlipbook(Flipbook $flipbook): ResponseInterface
     {
         $assets = $this->resolveViteAssets();
@@ -51,23 +46,23 @@ final class FlipbookController extends ActionController
             $this->assetCollector->addJavaScript(
                 'digital-page-flip',
                 $assets['js'],
-                ['type' => 'module']
+                ['type' => 'module'],
             );
         }
 
         if ($assets['css'] !== '') {
             $this->assetCollector->addStyleSheet(
                 'digital-page-flip',
-                $assets['css']
+                $assets['css'],
             );
         }
 
         $this->view->assign('flipbook', $flipbook);
+        /** @phpstan-ignore method.notFound (setTemplate exists on concrete TYPO3 Fluid view) */
         $this->view->setTemplate('Flipbook/Show');
 
         return $this->htmlResponse();
     }
-
     /**
      * @return array{js: string, css: string}
      */
@@ -80,7 +75,7 @@ final class FlipbookController extends ActionController
             return $result;
         }
 
-        $manifest = json_decode((string)file_get_contents($manifestFile), true);
+        $manifest = json_decode((string) file_get_contents($manifestFile), true, 512, JSON_THROW_ON_ERROR);
         if (!is_array($manifest)) {
             return $result;
         }
@@ -91,10 +86,10 @@ final class FlipbookController extends ActionController
             if (!is_array($entry) || !isset($entry['file'])) {
                 continue;
             }
-            if (str_ends_with($entry['file'], '.js')) {
+            if (str_ends_with((string) $entry['file'], '.js')) {
                 $result['js'] = $basePath . $entry['file'];
             }
-            if (str_ends_with($entry['file'], '.css')) {
+            if (str_ends_with((string) $entry['file'], '.css')) {
                 $result['css'] = $basePath . $entry['file'];
             }
         }

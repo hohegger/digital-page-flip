@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Throwable;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 final class ConvertPdfCommand extends Command
@@ -31,7 +32,7 @@ final class ConvertPdfCommand extends Command
             ->addArgument(
                 'uid',
                 InputArgument::OPTIONAL,
-                'UID of a specific flipbook to convert (converts all pending if omitted)'
+                'UID of a specific flipbook to convert (converts all pending if omitted)',
             );
     }
 
@@ -62,7 +63,7 @@ final class ConvertPdfCommand extends Command
             $this->persistenceManager->persistAll();
             $io->success(sprintf('Conversion completed. %d pages generated.', $flipbook->getPageCount()));
             return Command::SUCCESS;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $io->error(sprintf('Conversion failed: %s', $e->getMessage()));
             return Command::FAILURE;
         }

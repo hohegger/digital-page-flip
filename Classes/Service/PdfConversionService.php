@@ -4,34 +4,42 @@ declare(strict_types=1);
 
 namespace Kit\DigitalPageFlip\Service;
 
+use FilesystemIterator;
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Domain\Model\Page;
 use Kit\DigitalPageFlip\Domain\Repository\FlipbookRepository;
 use Psr\Log\LoggerInterface;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RuntimeException;
+use SplFileInfo;
+use Throwable;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
-final class PdfConversionService
+final readonly class PdfConversionService
 {
     private const DEFAULT_GS_PATH = '/usr/bin/gs';
     private const DEFAULT_RESOLUTION = 300;
     private const DEFAULT_WEBP_QUALITY = 90;
+    /** @phpstan-ignore classConstant.unused (reserved for future proc_open timeout) */
     private const GS_TIMEOUT_SECONDS = 120;
     private const TARGET_FOLDER_PREFIX = 'user_upload/tx_digitalpageflip/flipbook_';
-
     public function __construct(
-        private readonly ResourceFactory $resourceFactory,
-        private readonly StorageRepository $storageRepository,
-        private readonly FlipbookRepository $flipbookRepository,
-        private readonly PersistenceManager $persistenceManager,
-        private readonly LoggerInterface $logger,
+        private ResourceFactory $resourceFactory,
+        private StorageRepository $storageRepository,
+        private FlipbookRepository $flipbookRepository,
+        private PersistenceManager $persistenceManager,
+        private LoggerInterface $logger,
     ) {}
-
     /**
      * Converts a PDF attached to the given flipbook into page images (WebP + PNG fallback).
      *
@@ -44,7 +52,7 @@ final class PdfConversionService
         try {
             $pdfFileReference = $flipbook->getPdfFile();
             if ($pdfFileReference === null) {
-                throw new \RuntimeException('Flipbook has no PDF file attached.', 1710000001);
+                throw new RuntimeException('Flipbook has no PDF file attached.', 1_710_000_001);
             }
 
             $this->validatePdf($pdfFileReference);
@@ -65,14 +73,14 @@ final class PdfConversionService
             $pageCount = $this->executeGhostscript($gsPath, $pdfLocalPath, $tempDir, $resolution);
 
             if ($pageCount === 0) {
-                throw new \RuntimeException('Ghostscript produced no output pages.', 1710000002);
+                throw new RuntimeException('Ghostscript produced no output pages.', 1_710_000_002);
             }
 
             $this->normalizePageDimensions($tempDir, $pageCount);
 
             $storage = $this->storageRepository->getDefaultStorage();
             if ($storage === null) {
-                throw new \RuntimeException('No default FAL storage available.', 1710000003);
+                throw new RuntimeException('No default FAL storage available.', 1_710_000_003);
             }
 
             $targetFolderPath = self::TARGET_FOLDER_PREFIX . $flipbook->getUid() . '/';
@@ -119,7 +127,7 @@ final class PdfConversionService
                 'flipbookUid' => $flipbook->getUid(),
                 'pageCount' => $pageCount,
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $flipbook->setConversionStatus(Flipbook::STATUS_ERROR);
             $this->flipbookRepository->update($flipbook);
             $this->persistenceManager->persistAll();
@@ -137,7 +145,6 @@ final class PdfConversionService
             }
         }
     }
-
     /**
      * Validates that the attached file is a genuine PDF.
      */
@@ -147,13 +154,12 @@ final class PdfConversionService
         $mimeType = $originalFile->getMimeType();
 
         if ($mimeType !== 'application/pdf') {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('Invalid MIME type "%s", expected "application/pdf".', $mimeType),
-                1710000010
+                1_710_000_010,
             );
         }
     }
-
     /**
      * Executes Ghostscript to rasterize the PDF into PNG pages.
      *
@@ -163,7 +169,7 @@ final class PdfConversionService
         string $gsPath,
         string $pdfPath,
         string $outputDir,
-        int $resolution
+        int $resolution,
     ): int {
         $outputPattern = $outputDir . '/page_%03d.png';
 
@@ -172,7 +178,7 @@ final class PdfConversionService
             escapeshellarg($gsPath),
             $resolution,
             escapeshellarg($outputPattern),
-            escapeshellarg($pdfPath)
+            escapeshellarg($pdfPath),
         );
 
         $output = [];
@@ -185,9 +191,9 @@ final class PdfConversionService
                 'exitCode' => $exitCode,
                 'output' => mb_substr($outputStr, 0, 2000),
             ]);
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('Ghostscript exited with code %d: %s', $exitCode, mb_substr($outputStr, 0, 500)),
-                1710000022
+                1_710_000_022,
             );
         }
 
@@ -195,7 +201,6 @@ final class PdfConversionService
 
         return $generatedFiles !== false ? count($generatedFiles) : 0;
     }
-
     /**
      * Normalizes all generated PNGs to the dimensions of the first page.
      * PDFs can have pages with different sizes — this ensures uniform flipbook rendering.
@@ -231,7 +236,7 @@ final class PdfConversionService
                 escapeshellarg($pagePath),
                 $targetWidth,
                 $targetHeight,
-                escapeshellarg($pagePath)
+                escapeshellarg($pagePath),
             );
 
             exec($command);
@@ -243,7 +248,6 @@ final class PdfConversionService
             ]);
         }
     }
-
     /**
      * Converts a PNG image to WebP format via ImageMagick.
      */
@@ -253,7 +257,7 @@ final class PdfConversionService
             'convert %s -quality %d %s 2>&1',
             escapeshellarg($pngPath),
             $quality,
-            escapeshellarg($webpPath)
+            escapeshellarg($webpPath),
         );
 
         $output = [];
@@ -261,50 +265,47 @@ final class PdfConversionService
         exec($command, $output, $exitCode);
 
         if ($exitCode !== 0) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'ImageMagick WebP conversion failed (exit code %d): %s',
                     $exitCode,
-                    implode("\n", $output)
+                    implode("\n", $output),
                 ),
-                1710000030
+                1_710_000_030,
             );
         }
 
         if (!file_exists($webpPath)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('WebP file was not created at expected path: %s', $webpPath),
-                1710000031
+                1_710_000_031,
             );
         }
     }
-
     /**
      * Registers a local file in FAL by adding it to the given folder.
-     *
-     * @param \TYPO3\CMS\Core\Resource\Folder $targetFolder
      */
     private function registerFileInFal(
         string $localFilePath,
-        \TYPO3\CMS\Core\Resource\Folder $targetFolder,
-        string $fileName
+        Folder $targetFolder,
+        string $fileName,
     ): File {
         $storage = $targetFolder->getStorage();
 
+        /** @var File */
         return $storage->addFile(
             $localFilePath,
             $targetFolder,
             $fileName,
-            \TYPO3\CMS\Core\Resource\DuplicationBehavior::REPLACE
+            DuplicationBehavior::REPLACE,
         );
     }
-
     /**
      * Creates an Extbase FileReference from a FAL File object via sys_file_reference record.
      */
     private function createFileReference(File $falFile): FileReference
     {
-        $connection = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable('sys_file_reference');
 
         $connection->insert('sys_file_reference', [
@@ -317,7 +318,7 @@ final class PdfConversionService
             'pid' => 0,
         ]);
 
-        $referenceUid = (int)$connection->lastInsertId();
+        $referenceUid = (int) $connection->lastInsertId();
 
         $coreFileReference = $this->resourceFactory->getFileReferenceObject($referenceUid);
 
@@ -327,7 +328,6 @@ final class PdfConversionService
 
         return $extbaseFileReference;
     }
-
     /**
      * Creates a temporary directory for conversion output.
      */
@@ -342,15 +342,14 @@ final class PdfConversionService
         $tempDir = $basePath . '/tx_digitalpageflip_' . bin2hex(random_bytes(8));
 
         if (!mkdir($tempDir, 0775, true) && !is_dir($tempDir)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('Failed to create temporary directory: %s', $tempDir),
-                1710000040
+                1_710_000_040,
             );
         }
 
         return $tempDir;
     }
-
     /**
      * Removes the temporary directory and all its contents.
      */
@@ -366,13 +365,13 @@ final class PdfConversionService
             return;
         }
 
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($realPath, \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($realPath, RecursiveDirectoryIterator::SKIP_DOTS | FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST,
         );
 
         foreach ($files as $fileInfo) {
-            /** @var \SplFileInfo $fileInfo */
+            /** @var SplFileInfo $fileInfo */
             if ($fileInfo->isDir()) {
                 rmdir($fileInfo->getRealPath());
             } else {
@@ -382,7 +381,6 @@ final class PdfConversionService
 
         rmdir($realPath);
     }
-
     /**
      * Resolves the Ghostscript binary path from settings or falls back to default.
      *
@@ -396,9 +394,9 @@ final class PdfConversionService
             if (is_executable(self::DEFAULT_GS_PATH)) {
                 return self::DEFAULT_GS_PATH;
             }
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('Ghostscript binary not found or not executable at: %s', $gsPath),
-                1710000050
+                1_710_000_050,
             );
         }
 

@@ -7,7 +7,7 @@ namespace Kit\DigitalPageFlip\Hook;
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Domain\Repository\FlipbookRepository;
 use Kit\DigitalPageFlip\Service\PdfConversionService;
-use Psr\Log\LoggerInterface;
+use Throwable;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -29,10 +29,10 @@ final class DataHandlerHook
         }
 
         foreach ($dataHandler->datamap[self::TABLE] as $id => $fields) {
-            if (str_starts_with((string)$id, 'NEW')) {
-                $uid = (int)($dataHandler->substNEWwithIDs[$id] ?? 0);
+            if (str_starts_with((string) $id, 'NEW')) {
+                $uid = (int) ($dataHandler->substNEWwithIDs[$id] ?? 0);
             } else {
-                $uid = (int)$id;
+                $uid = (int) $id;
             }
 
             if ($uid <= 0) {
@@ -52,7 +52,7 @@ final class DataHandlerHook
             ->select('pdf_file', 'conversion_status', 'page_count')
             ->from(self::TABLE)
             ->where(
-                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT))
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)),
             )
             ->executeQuery()
             ->fetchAssociative();
@@ -61,8 +61,8 @@ final class DataHandlerHook
             return;
         }
 
-        $pdfCount = (int)$record['pdf_file'];
-        $status = (int)$record['conversion_status'];
+        $pdfCount = (int) $record['pdf_file'];
+        $status = (int) $record['conversion_status'];
 
         if ($pdfCount === 0) {
             return;
@@ -76,7 +76,7 @@ final class DataHandlerHook
         $conversionService = $container->get(PdfConversionService::class);
         $flipbookRepository = $container->get(FlipbookRepository::class);
         $persistenceManager = $container->get(PersistenceManager::class);
-        $logger = $container->get(LogManager::class)->getLogger(__CLASS__);
+        $logger = $container->get(LogManager::class)->getLogger(self::class);
 
         $flipbook = $flipbookRepository->findByUid($uid);
         if ($flipbook === null) {
@@ -94,9 +94,9 @@ final class DataHandlerHook
 
             $this->addFlashMessage(
                 sprintf('PDF wurde erfolgreich konvertiert. %d Seiten generiert.', $flipbook->getPageCount()),
-                ContextualFeedbackSeverity::OK
+                ContextualFeedbackSeverity::OK,
             );
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $logger->error('Automatic PDF conversion failed.', [
                 'flipbookUid' => $uid,
                 'error' => $e->getMessage(),
@@ -104,7 +104,7 @@ final class DataHandlerHook
 
             $this->addFlashMessage(
                 sprintf('PDF-Konvertierung fehlgeschlagen: %s', $e->getMessage()),
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
         }
     }
@@ -116,7 +116,7 @@ final class DataHandlerHook
             $message,
             'PDF-Konvertierung',
             $severity,
-            true
+            true,
         );
         GeneralUtility::makeInstance(FlashMessageService::class)
             ->getMessageQueueByIdentifier()

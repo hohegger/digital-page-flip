@@ -9,5 +9,5 @@ defined('TYPO3') or die();
 ExtensionManagementUtility::addStaticFile(
     'digital_page_flip',
     'Configuration/TypoScript',
-    'Digital Page Flip'
+    'Digital Page Flip',
 );

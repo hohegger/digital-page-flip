@@ -29,7 +29,8 @@
         "saschaegerer/phpstan-typo3": "^1.9",
         "ssch/typo3-rector": "^1.0",
         "phpunit/phpunit": "^10.5",
-        "typo3/testing-framework": "^8.0"
+        "typo3/testing-framework": "^8.0",
+        "dg/bypass-finals": "^1.8"
     },
     "autoload": {
         "psr-4": {

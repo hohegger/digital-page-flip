@@ -11,7 +11,7 @@ ExtensionUtility::registerPlugin(
     'DigitalPageFlip',
     'Flipbook',
     'Digital Page Flip - Flipbook',
-    'digital-page-flip-flipbook'
+    'digital-page-flip-flipbook',
 );
 
 $pluginSignature = 'digitalpageflip_flipbook';
@@ -21,5 +21,5 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSi
 
 ExtensionManagementUtility::addPiFlexFormValue(
     $pluginSignature,
-    'FILE:EXT:digital_page_flip/Configuration/FlexForms/Flipbook.xml'
+    'FILE:EXT:digital_page_flip/Configuration/FlexForms/Flipbook.xml',
 );

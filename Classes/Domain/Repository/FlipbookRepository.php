@@ -28,7 +28,7 @@ final class FlipbookRepository extends Repository
     {
         $query = $this->createQuery();
         $query->matching(
-            $query->equals('conversionStatus', Flipbook::STATUS_COMPLETED)
+            $query->equals('conversionStatus', Flipbook::STATUS_COMPLETED),
         );
         $query->setOrderings([
             'publishDate' => QueryInterface::ORDER_DESCENDING,
@@ -47,7 +47,7 @@ final class FlipbookRepository extends Repository
             $query->logicalOr(
                 $query->equals('conversionStatus', Flipbook::STATUS_PENDING),
                 $query->equals('conversionStatus', Flipbook::STATUS_ERROR),
-            )
+            ),
         );
 
         return $query->execute();
