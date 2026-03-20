@@ -8,7 +8,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 80vh;
+    height: calc(100dvh - var(--viewer-offset, 0px));
     min-height: 500px;
     box-sizing: border-box;
 

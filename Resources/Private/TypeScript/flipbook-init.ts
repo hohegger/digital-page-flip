@@ -1,5 +1,11 @@
 import { PageFlip } from 'page-flip';
 
+// Calculate viewer offset from top of viewport (accounts for headers/navbars)
+document.querySelectorAll<HTMLElement>('.flipbook-viewer').forEach((viewer) => {
+  const rect = viewer.getBoundingClientRect();
+  viewer.style.setProperty('--viewer-offset', `${Math.max(0, Math.round(rect.top))}px`);
+});
+
 document.querySelectorAll<HTMLElement>('.flipbook-viewer__book').forEach((container) => {
   const pages: string[] = JSON.parse(container.dataset.flipbookPages || '[]');
 
@@ -30,11 +36,18 @@ document.querySelectorAll<HTMLElement>('.flipbook-viewer__book').forEach((contai
     container.appendChild(pageEl);
   });
 
-  // Calculate max dimensions from available space
+  // Calculate max dimensions from available space (use both width and height)
   const stage = container.closest('.flipbook-viewer__stage') as HTMLElement | null;
   const availableWidth = stage ? stage.clientWidth : window.innerWidth;
+  const availableHeight = stage ? stage.clientHeight : window.innerHeight;
   const pagesVisible = isMobile ? 1 : 2;
-  const maxPageWidth = Math.floor(availableWidth / pagesVisible);
+
+  // Fit by width
+  const maxByWidth = Math.floor(availableWidth / pagesVisible);
+  // Fit by height (derive page width from available height)
+  const maxByHeight = Math.floor(availableHeight / aspectRatio);
+  // Use the smaller to ensure the book fits both dimensions
+  const maxPageWidth = Math.min(maxByWidth, maxByHeight);
   const maxPageHeight = Math.floor(maxPageWidth * aspectRatio);
 
   const pageFlip = new PageFlip(container, {
