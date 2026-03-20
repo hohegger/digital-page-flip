@@ -13,16 +13,7 @@
             "Grep(*)",
             "Edit(*)",
             "Write(*)",
-            "Bash(git:*)",
-            "Bash(ls:*)",
-            "Bash(cat:*)",
-            "Bash(wc:*)",
-            "Bash(ddev exec:*)",
-            "Bash(ddev mysql:*)",
-            "Bash(ddev composer:*)",
-            "Bash(grep:*)",
-            "Bash(grep -v \"^$\")",
-            "Bash(awk '{if\\(NF\\) print}')"
+            "Bash(*)"
         ],
         "deny": []
     }
