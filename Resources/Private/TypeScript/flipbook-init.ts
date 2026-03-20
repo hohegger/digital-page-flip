@@ -111,6 +111,17 @@ document.querySelectorAll<HTMLElement>('.flipbook-viewer__book').forEach((contai
   prevBtn?.addEventListener('click', () => pageFlip.flipPrev());
   nextBtn?.addEventListener('click', () => pageFlip.flipNext());
 
+  // Sidebar: jump to specific page
+  const gotoButtons = document.querySelectorAll<HTMLButtonElement>(
+    `[data-flipbook-goto-page][data-flipbook-uid="${uid}"]`
+  );
+  gotoButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const page = parseInt(btn.dataset.flipbookGotoPage || '0', 10);
+      pageFlip.turnToPage(page);
+    });
+  });
+
   pageFlip.on('flip', () => updatePager());
 
   // Keyboard navigation

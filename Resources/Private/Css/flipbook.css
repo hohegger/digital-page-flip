@@ -1,4 +1,14 @@
 /* ==========================================================================
+   Body reset (standalone flipbook page)
+   ========================================================================== */
+
+body:has(.flipbook-viewer) {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* ==========================================================================
    Flipbook Viewer
    ========================================================================== */
 
@@ -13,6 +23,86 @@
     padding: clamp(1rem, 3vh, 2.5rem) clamp(0.5rem, 2vw, 1.5rem);
     box-sizing: border-box;
     overflow: hidden;
+}
+
+/* Main: sidebar + content side by side */
+.flipbook-viewer__main {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+}
+
+.flipbook-viewer__content {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Left sidebar */
+.flipbook-viewer__sidebar {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0.625rem;
+    background: #f7f7f8;
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 1px 0 4px rgba(0, 0, 0, 0.03);
+}
+
+.flipbook-viewer__sidebar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.flipbook-viewer__sidebar-divider {
+    width: 24px;
+    height: 0;
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    margin: 0.5rem 0;
+}
+
+.flipbook-viewer__sidebar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #6b6b6b;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.flipbook-viewer__sidebar-btn:hover {
+    color: #1a1a1a;
+    background: rgba(0, 0, 0, 0.07);
+}
+
+.flipbook-viewer__sidebar-btn:focus-visible {
+    outline: 2px solid #5b8def;
+    outline-offset: 2px;
+}
+
+.flipbook-viewer__sidebar-btn:active {
+    background: rgba(0, 0, 0, 0.1);
+    transition-duration: 0.05s;
+}
+
+.flipbook-viewer__sidebar-btn svg {
+    width: 22px;
+    height: 22px;
 }
 
 /* Stage: book + arrows side by side */
@@ -70,20 +160,16 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    padding: 0;
+    padding: 0.5rem;
     border: none;
-    border-radius: 50%;
     background: transparent;
-    color: #aaa;
+    color: #bbb;
     cursor: pointer;
-    transition: color 0.2s ease, background-color 0.2s ease;
+    transition: color 0.2s ease;
 }
 
 .flipbook-viewer__btn:hover {
-    color: #333;
-    background: rgba(0, 0, 0, 0.04);
+    color: #555;
 }
 
 .flipbook-viewer__btn:focus-visible {
@@ -92,9 +178,8 @@
 }
 
 .flipbook-viewer__btn:disabled {
-    opacity: 0.2;
+    opacity: 0.15;
     cursor: default;
-    background: transparent;
 }
 
 /* Page counter */
@@ -143,10 +228,15 @@
     .flipbook-viewer__btn--next {
         display: none;
     }
+
+    .flipbook-viewer__sidebar {
+        display: none;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .flipbook-viewer__btn {
+    .flipbook-viewer__btn,
+    .flipbook-viewer__sidebar-btn {
         transition: none;
     }
 }

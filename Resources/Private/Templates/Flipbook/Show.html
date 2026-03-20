@@ -6,41 +6,47 @@
 
 <f:section name="Main">
     <section class="flipbook-viewer" aria-label="{flipbook.title}">
-        <div class="flipbook-viewer__stage">
-            <button class="flipbook-viewer__btn flipbook-viewer__btn--prev"
-                    type="button"
-                    data-flipbook-prev="{flipbook.uid}"
-                    aria-label="Vorherige Seite">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                </svg>
-            </button>
+        <div class="flipbook-viewer__main">
+            <f:render partial="Flipbook/Sidebar" arguments="{flipbook: flipbook, settings: settings}" />
 
-            <div class="flipbook-viewer__book"
-                 id="flipbook-{flipbook.uid}"
-                 data-flipbook-pages="{kit:flipbookData(flipbook: flipbook)}"
-                 data-flipbook-width="{settings.flipbook.width}"
-                 data-flipbook-height="{settings.flipbook.height}"
-                 data-flipbook-show-cover="{settings.flipbook.showCover}"
-                 data-flipbook-swipe-distance="{settings.flipbook.swipeDistance}"
-            >
+            <div class="flipbook-viewer__content">
+                <div class="flipbook-viewer__stage">
+                    <button class="flipbook-viewer__btn flipbook-viewer__btn--prev"
+                            type="button"
+                            data-flipbook-prev="{flipbook.uid}"
+                            aria-label="Vorherige Seite">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+
+                    <div class="flipbook-viewer__book"
+                         id="flipbook-{flipbook.uid}"
+                         data-flipbook-pages="{kit:flipbookData(flipbook: flipbook)}"
+                         data-flipbook-width="{settings.flipbook.width}"
+                         data-flipbook-height="{settings.flipbook.height}"
+                         data-flipbook-show-cover="{settings.flipbook.showCover}"
+                         data-flipbook-swipe-distance="{settings.flipbook.swipeDistance}"
+                    >
+                    </div>
+
+                    <button class="flipbook-viewer__btn flipbook-viewer__btn--next"
+                            type="button"
+                            data-flipbook-next="{flipbook.uid}"
+                            aria-label="Nächste Seite">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+
+                <nav class="flipbook-viewer__controls" aria-label="Katalog-Navigation">
+                    <span class="flipbook-viewer__pager" data-flipbook-pager="{flipbook.uid}" aria-live="polite">
+                        <span data-flipbook-current>1</span> / <span data-flipbook-total>{flipbook.pageCount}</span>
+                    </span>
+                </nav>
             </div>
-
-            <button class="flipbook-viewer__btn flipbook-viewer__btn--next"
-                    type="button"
-                    data-flipbook-next="{flipbook.uid}"
-                    aria-label="Nächste Seite">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-            </button>
         </div>
-
-        <nav class="flipbook-viewer__controls" aria-label="Katalog-Navigation">
-            <span class="flipbook-viewer__pager" data-flipbook-pager="{flipbook.uid}" aria-live="polite">
-                <span data-flipbook-current>1</span> / <span data-flipbook-total>{flipbook.pageCount}</span>
-            </span>
-        </nav>
     </section>
 </f:section>
 

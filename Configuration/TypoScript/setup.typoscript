@@ -28,5 +28,8 @@ plugin.tx_digitalpageflip {
     flipbook.height = {$plugin.tx_digitalpageflip.settings.flipbook.height}
     flipbook.showCover = {$plugin.tx_digitalpageflip.settings.flipbook.showCover}
     flipbook.swipeDistance = {$plugin.tx_digitalpageflip.settings.flipbook.swipeDistance}
+    sidebar.privacyPageUid = {$plugin.tx_digitalpageflip.settings.sidebar.privacyPageUid}
+    sidebar.imprintPageUid = {$plugin.tx_digitalpageflip.settings.sidebar.imprintPageUid}
+    sidebar.homePageUid = {$plugin.tx_digitalpageflip.settings.sidebar.homePageUid}
   }
 }

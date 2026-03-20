@@ -21,5 +21,12 @@ plugin.tx_digitalpageflip {
     flipbook.height = 880
     flipbook.showCover = 1
     flipbook.swipeDistance = 30
+
+    # cat=plugin.tx_digitalpageflip/sidebar/10; type=int+; label=Datenschutz (Page UID): Seiten-UID der Datenschutzseite. Leer lassen um den Link auszublenden.
+    sidebar.privacyPageUid =
+    # cat=plugin.tx_digitalpageflip/sidebar/20; type=int+; label=Impressum (Page UID): Seiten-UID der Impressumsseite. Leer lassen um den Link auszublenden.
+    sidebar.imprintPageUid =
+    # cat=plugin.tx_digitalpageflip/sidebar/30; type=int+; label=Startseite (Page UID): Seiten-UID der Startseite. Leer lassen um den Link auszublenden.
+    sidebar.homePageUid =
   }
 }
