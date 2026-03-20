@@ -2,8 +2,8 @@
 .Build/
 node_modules/
 
-# Build output
-Resources/Public/Build/
+# Build output (manifest + compiled assets are committed for distribution)
+# Resources/Public/Build/
 
 # DDEV (generated files)
 .ddev/.ddev-docker-compose-base.yaml

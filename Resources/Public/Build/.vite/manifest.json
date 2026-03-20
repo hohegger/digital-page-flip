@@ -1,0 +1,13 @@
+{
+  "Resources/Private/Scss/flipbook.scss": {
+    "file": "assets/styles-5Kz1bANI.css",
+    "src": "Resources/Private/Scss/flipbook.scss",
+    "isEntry": true
+  },
+  "Resources/Private/TypeScript/flipbook-init.ts": {
+    "file": "js/flipbook-dYZAWwnj.js",
+    "name": "flipbook",
+    "src": "Resources/Private/TypeScript/flipbook-init.ts",
+    "isEntry": true
+  }
+}
