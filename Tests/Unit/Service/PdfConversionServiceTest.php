@@ -182,6 +182,95 @@ final class PdfConversionServiceTest extends TestCase
     }
 
     // ---------------------------------------------------------------
+    // validateFileSize() — via Reflection
+    // ---------------------------------------------------------------
+
+    #[Test]
+    public function validateFileSizeAcceptsFileWithinLimit(): void
+    {
+        $fileReference = $this->createFileReferenceWithMimeTypeAndSize('application/pdf', 10 * 1024 * 1024);
+
+        $method = new ReflectionMethod(PdfConversionService::class, 'validateFileSize');
+        $method->invoke($this->subject, $fileReference, ['maxFileSize' => 50]);
+
+        self::assertTrue(true);
+    }
+
+    #[Test]
+    public function validateFileSizeAcceptsFileExactlyAtLimit(): void
+    {
+        $maxMb = 50;
+        $fileReference = $this->createFileReferenceWithMimeTypeAndSize('application/pdf', $maxMb * 1024 * 1024);
+
+        $method = new ReflectionMethod(PdfConversionService::class, 'validateFileSize');
+        $method->invoke($this->subject, $fileReference, ['maxFileSize' => $maxMb]);
+
+        self::assertTrue(true);
+    }
+
+    #[Test]
+    public function validateFileSizeThrowsWhenFileTooLarge(): void
+    {
+        $fileReference = $this->createFileReferenceWithMimeTypeAndSize('application/pdf', 51 * 1024 * 1024);
+
+        $method = new ReflectionMethod(PdfConversionService::class, 'validateFileSize');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionCode(1710000011);
+        $method->invoke($this->subject, $fileReference, ['maxFileSize' => 50]);
+    }
+
+    #[Test]
+    public function validateFileSizeUsesDefaultLimitWhenNotConfigured(): void
+    {
+        // Default is 50 MB — a 51 MB file should be rejected
+        $fileReference = $this->createFileReferenceWithMimeTypeAndSize('application/pdf', 51 * 1024 * 1024);
+
+        $method = new ReflectionMethod(PdfConversionService::class, 'validateFileSize');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionCode(1710000011);
+        $method->invoke($this->subject, $fileReference, []);
+    }
+
+    #[Test]
+    public function validateFileSizeAcceptsZeroSizeFile(): void
+    {
+        $fileReference = $this->createFileReferenceWithMimeTypeAndSize('application/pdf', 0);
+
+        $method = new ReflectionMethod(PdfConversionService::class, 'validateFileSize');
+        $method->invoke($this->subject, $fileReference, ['maxFileSize' => 50]);
+
+        self::assertTrue(true);
+    }
+
+    #[Test]
+    public function convertThrowsExceptionWhenFileTooLarge(): void
+    {
+        $flipbook = new Flipbook();
+        $flipbook->setPdfFile($this->createFileReferenceWithMimeTypeAndSize('application/pdf', 100 * 1024 * 1024));
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionCode(1710000011);
+
+        $this->subject->convert($flipbook, ['maxFileSize' => 50]);
+    }
+
+    #[Test]
+    public function convertSetsStatusToErrorWhenFileTooLarge(): void
+    {
+        $flipbook = new Flipbook();
+        $flipbook->setPdfFile($this->createFileReferenceWithMimeTypeAndSize('application/pdf', 100 * 1024 * 1024));
+
+        try {
+            $this->subject->convert($flipbook, ['maxFileSize' => 50]);
+            self::fail('Expected RuntimeException was not thrown.');
+        } catch (RuntimeException) {
+            self::assertSame(Flipbook::STATUS_ERROR, $flipbook->getConversionStatus());
+        }
+    }
+
+    // ---------------------------------------------------------------
     // resolveGhostscriptPath() — via Reflection
     // ---------------------------------------------------------------
 
@@ -242,8 +331,14 @@ final class PdfConversionServiceTest extends TestCase
 
     private function createFileReferenceWithMimeType(string $mimeType): FileReference
     {
+        return $this->createFileReferenceWithMimeTypeAndSize($mimeType, 1024);
+    }
+
+    private function createFileReferenceWithMimeTypeAndSize(string $mimeType, int $size): FileReference
+    {
         $file = $this->createMock(File::class);
         $file->method('getMimeType')->willReturn($mimeType);
+        $file->method('getSize')->willReturn($size);
 
         $coreFileReference = $this->createMock(CoreFileReference::class);
         $coreFileReference->method('getOriginalFile')->willReturn($file);

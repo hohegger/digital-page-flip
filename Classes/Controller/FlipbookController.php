@@ -7,6 +7,7 @@ namespace Kit\DigitalPageFlip\Controller;
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Domain\Repository\FlipbookRepository;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -18,6 +19,7 @@ final class FlipbookController extends ActionController
     public function __construct(
         private readonly FlipbookRepository $flipbookRepository,
         private readonly AssetCollector $assetCollector,
+        private readonly LoggerInterface $logger,
     ) {}
 
     public function showAction(): ResponseInterface
@@ -27,6 +29,15 @@ final class FlipbookController extends ActionController
         $flipbook = $this->flipbookRepository->findByUid($flipbookUid);
 
         if (!$flipbook instanceof Flipbook) {
+            return $this->htmlResponse();
+        }
+
+        if ($flipbook->getConversionStatus() !== Flipbook::STATUS_COMPLETED) {
+            $this->logger->info('Flipbook not ready for display.', [
+                'flipbookUid' => $flipbook->getUid(),
+                'status' => $flipbook->getConversionStatus(),
+            ]);
+            $this->view->assign('conversionPending', true);
             return $this->htmlResponse();
         }
 

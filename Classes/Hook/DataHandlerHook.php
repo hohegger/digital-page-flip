@@ -40,11 +40,11 @@ final class DataHandlerHook
                 continue;
             }
 
-            $this->processFlipbook($uid);
+            $this->processFlipbook($uid, $dataHandler);
         }
     }
 
-    private function processFlipbook(int $uid): void
+    private function processFlipbook(int $uid, DataHandler $dataHandler): void
     {
         $container = GeneralUtility::getContainer();
         $queryBuilder = $container->get(ConnectionPool::class)
@@ -70,7 +70,8 @@ final class DataHandlerHook
             return;
         }
 
-        if ($status === Flipbook::STATUS_PROCESSING || $status === Flipbook::STATUS_COMPLETED) {
+        $pdfChanged = isset($dataHandler->datamap[self::TABLE][$uid]['pdf_file']);
+        if (!self::shouldConvert($status, $pdfChanged)) {
             return;
         }
 
@@ -146,6 +147,22 @@ final class DataHandlerHook
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Determines whether a flipbook should be (re-)converted based on its status and whether the PDF changed.
+     */
+    public static function shouldConvert(int $status, bool $pdfChanged): bool
+    {
+        if ($status === Flipbook::STATUS_PROCESSING) {
+            return false;
+        }
+
+        if ($status === Flipbook::STATUS_COMPLETED && !$pdfChanged) {
+            return false;
+        }
+
+        return true;
     }
 
     private function addFlashMessage(string $message, ContextualFeedbackSeverity $severity): void

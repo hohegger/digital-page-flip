@@ -31,7 +31,7 @@ final readonly class PdfConversionService
     private const DEFAULT_GS_PATH = '/usr/bin/gs';
     private const DEFAULT_RESOLUTION = 300;
     private const DEFAULT_WEBP_QUALITY = 90;
-    /** @phpstan-ignore classConstant.unused (reserved for future proc_open timeout) */
+    private const DEFAULT_MAX_FILE_SIZE_MB = 50;
     private const GS_TIMEOUT_SECONDS = 120;
     private const TARGET_FOLDER_PREFIX = 'user_upload/tx_digitalpageflip/flipbook_';
     public function __construct(
@@ -58,6 +58,7 @@ final readonly class PdfConversionService
             }
 
             $this->validatePdf($pdfFileReference);
+            $this->validateFileSize($pdfFileReference, $settings);
 
             $flipbook->setConversionStatus(Flipbook::STATUS_PROCESSING);
             $this->flipbookRepository->update($flipbook);
@@ -171,6 +172,27 @@ final readonly class PdfConversionService
             );
         }
     }
+
+    /**
+     * Validates that the PDF does not exceed the configured maximum file size.
+     *
+     * @param array<string, mixed> $settings
+     */
+    private function validateFileSize(FileReference $fileReference, array $settings): void
+    {
+        $originalFile = $fileReference->getOriginalResource()->getOriginalFile();
+        $maxMb = max(1, (int) ($settings['maxFileSize'] ?? self::DEFAULT_MAX_FILE_SIZE_MB));
+        $maxBytes = $maxMb * 1024 * 1024;
+        $fileSize = $originalFile->getSize();
+
+        if ($fileSize > $maxBytes) {
+            throw new RuntimeException(
+                sprintf('PDF exceeds maximum file size of %d MB (actual: %d MB).', $maxMb, (int) ceil($fileSize / 1024 / 1024)),
+                1_710_000_011,
+            );
+        }
+    }
+
     /**
      * Executes Ghostscript to rasterize the PDF into PNG pages.
      *
@@ -192,18 +214,64 @@ final readonly class PdfConversionService
             escapeshellarg($pdfPath),
         );
 
-        $output = [];
-        $exitCode = 0;
-        exec($command . ' 2>&1', $output, $exitCode);
+        $descriptors = [
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w'],
+        ];
+
+        $process = proc_open($command, $descriptors, $pipes);
+
+        if (!is_resource($process)) {
+            throw new RuntimeException('Failed to start Ghostscript process.', 1_710_000_020);
+        }
+
+        fclose($pipes[0]);
+
+        $startTime = time();
+        $output = '';
+        $timedOut = false;
+
+        stream_set_blocking($pipes[1], false);
+        stream_set_blocking($pipes[2], false);
+
+        while (true) {
+            $status = proc_get_status($process);
+            if (!$status['running']) {
+                break;
+            }
+            if ((time() - $startTime) > self::GS_TIMEOUT_SECONDS) {
+                $timedOut = true;
+                proc_terminate($process, 9);
+                break;
+            }
+            $output .= stream_get_contents($pipes[1]);
+            usleep(100_000);
+        }
+
+        $output .= stream_get_contents($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+
+        if ($timedOut) {
+            proc_close($process);
+            throw new RuntimeException(
+                sprintf('Ghostscript timed out after %d seconds.', self::GS_TIMEOUT_SECONDS),
+                1_710_000_021,
+            );
+        }
+
+        $exitCode = proc_close($process);
 
         if ($exitCode !== 0) {
-            $outputStr = implode("\n", $output);
+            $combinedOutput = trim($output . "\n" . $stderr);
             $this->logger->error('Ghostscript exited with error.', [
                 'exitCode' => $exitCode,
-                'output' => mb_substr($outputStr, 0, 2000),
+                'output' => mb_substr($combinedOutput, 0, 2000),
             ]);
             throw new RuntimeException(
-                sprintf('Ghostscript exited with code %d: %s', $exitCode, mb_substr($outputStr, 0, 500)),
+                sprintf('Ghostscript exited with code %d: %s', $exitCode, mb_substr($combinedOutput, 0, 500)),
                 1_710_000_022,
             );
         }
@@ -250,7 +318,18 @@ final readonly class PdfConversionService
                 escapeshellarg($pagePath),
             );
 
-            exec($command);
+            $resizeOutput = [];
+            $resizeExitCode = 0;
+            exec($command, $resizeOutput, $resizeExitCode);
+
+            if ($resizeExitCode !== 0) {
+                $this->logger->warning('ImageMagick resize failed for page.', [
+                    'page' => $i,
+                    'exitCode' => $resizeExitCode,
+                    'output' => implode("\n", $resizeOutput),
+                ]);
+                continue;
+            }
 
             $this->logger->info('Normalized page dimensions.', [
                 'page' => $i,

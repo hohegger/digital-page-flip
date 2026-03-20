@@ -90,7 +90,8 @@ final readonly class FlipbookCleanupService
             self::FILE_REF_TABLE,
             'uid_foreign',
             $pageUids,
-            "tablenames = 'tx_digitalpageflip_domain_model_page'",
+            'tablenames',
+            'tx_digitalpageflip_domain_model_page',
         );
 
         // Delete FAL files via storage API
@@ -376,7 +377,7 @@ final readonly class FlipbookCleanupService
     /**
      * @param list<int> $values
      */
-    private function hardDeleteByField(string $table, string $field, array $values, string $additionalWhere = ''): void
+    private function hardDeleteByField(string $table, string $field, array $values, string $additionalField = '', string $additionalValue = ''): void
     {
         if ($values === []) {
             return;
@@ -394,8 +395,13 @@ final readonly class FlipbookCleanupService
                 ),
             );
 
-        if ($additionalWhere !== '') {
-            $queryBuilder->andWhere($additionalWhere);
+        if ($additionalField !== '') {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq(
+                    $additionalField,
+                    $queryBuilder->createNamedParameter($additionalValue),
+                ),
+            );
         }
 
         $queryBuilder->executeStatement();

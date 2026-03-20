@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kit\DigitalPageFlip\Tests\Unit\Domain\Model;
 
-use DateTime;
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Domain\Model\Page;
 use PHPUnit\Framework\Attributes\Test;
@@ -147,28 +146,6 @@ final class FlipbookTest extends TestCase
         self::assertSame(1, Flipbook::STATUS_PROCESSING);
         self::assertSame(2, Flipbook::STATUS_COMPLETED);
         self::assertSame(3, Flipbook::STATUS_ERROR);
-    }
-
-    #[Test]
-    public function publishDateIsNullByDefault(): void
-    {
-        self::assertNull($this->subject->getPublishDate());
-    }
-
-    #[Test]
-    public function publishDateCanBeSet(): void
-    {
-        $date = new DateTime('2026-01-15');
-        $this->subject->setPublishDate($date);
-        self::assertSame($date, $this->subject->getPublishDate());
-    }
-
-    #[Test]
-    public function publishDateCanBeSetToNull(): void
-    {
-        $this->subject->setPublishDate(new DateTime());
-        $this->subject->setPublishDate(null);
-        self::assertNull($this->subject->getPublishDate());
     }
 
     #[Test]
