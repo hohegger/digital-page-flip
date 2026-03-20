@@ -6,6 +6,7 @@ namespace Kit\DigitalPageFlip\Tests\Unit\Service;
 
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Domain\Repository\FlipbookRepository;
+use Kit\DigitalPageFlip\Service\FlipbookCleanupService;
 use Kit\DigitalPageFlip\Service\PdfConversionService;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -38,6 +39,7 @@ final class PdfConversionServiceTest extends TestCase
             $this->createMock(StorageRepository::class),
             $this->flipbookRepositoryMock,
             $this->persistenceManagerMock,
+            $this->createMock(FlipbookCleanupService::class),
             $this->loggerMock,
         );
     }

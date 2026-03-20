@@ -6,6 +6,7 @@ namespace Kit\DigitalPageFlip\Hook;
 
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Domain\Repository\FlipbookRepository;
+use Kit\DigitalPageFlip\Service\FlipbookCleanupService;
 use Kit\DigitalPageFlip\Service\PdfConversionService;
 use Throwable;
 use TYPO3\CMS\Core\Database\Connection;
@@ -106,6 +107,44 @@ final class DataHandlerHook
                 sprintf('PDF-Konvertierung fehlgeschlagen: %s', $e->getMessage()),
                 ContextualFeedbackSeverity::ERROR,
             );
+        }
+    }
+
+    /**
+     * Called after DataHandler processes command map operations (delete, copy, move).
+     * Cleans up FAL files and references when a flipbook is deleted.
+     */
+    /**
+     * @param array<string, mixed> $pasteDatamap
+     */
+    public function processCmdmap_postProcess(
+        string $command,
+        string $table,
+        int|string $id,
+        mixed $value,
+        DataHandler $dataHandler,
+        mixed $pasteUpdate,
+        array $pasteDatamap,
+    ): void {
+        if ($table !== self::TABLE || $command !== 'delete') {
+            return;
+        }
+
+        $uid = (int) $id;
+        if ($uid <= 0) {
+            return;
+        }
+
+        try {
+            $container = GeneralUtility::getContainer();
+            $cleanupService = $container->get(FlipbookCleanupService::class);
+            $cleanupService->cleanupForDeletion($uid);
+        } catch (Throwable $e) {
+            $logger = GeneralUtility::getContainer()->get(LogManager::class)->getLogger(self::class);
+            $logger->error('FAL cleanup after flipbook deletion failed.', [
+                'flipbookUid' => $uid,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 

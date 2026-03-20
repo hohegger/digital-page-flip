@@ -18,3 +18,9 @@ services:
       - name: console.command
         command: 'digitalpageflip:convert'
         description: 'Convert PDF files of flipbook records to page images'
+
+  Kit\DigitalPageFlip\Command\CleanupCommand:
+    tags:
+      - name: console.command
+        command: 'digitalpageflip:cleanup'
+        description: 'Find and remove orphaned FAL files and folders from deleted flipbooks'

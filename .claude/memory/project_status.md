@@ -24,19 +24,21 @@ type: project
 - Viewer füllt Viewport (kein Scrollen)
 
 ### Phase 3: Testing & QA — IN ARBEIT
-- Unit Tests implementiert (2026-03-20): FlipbookTest, PageTest, PdfConversionServiceTest, FlipbookDataViewHelperTest, ConvertPdfCommandTest
+- Unit Tests implementiert (2026-03-20): FlipbookTest, PageTest, PdfConversionServiceTest, FlipbookDataViewHelperTest, ConvertPdfCommandTest, FlipbookCleanupServiceTest, CleanupCommandTest
 - dg/bypass-finals als Dev-Dependency für Mocking finaler Klassen
-- QA-Pipeline (`composer ci:all`) noch nicht ausgeführt
+- QA-Pipeline (`composer ci:all`) läuft grün (69 Tests, 107 Assertions)
 - Functional Tests: nur Stubs vorhanden
 - Kein formales Sicherheitsaudit
 
 ### Phase 4: TYPO3 v14 Migration — OFFEN (nach Relaunch)
 
 ### Bekannte offene Punkte
-- fluid_styled_content wurde als require (nicht require-dev) hinzugefügt — prüfen ob gewollt
-- Verwaiste FAL-Einträge von früheren Konvertierungen in der DB (alte sm/lg/png Referenzen)
 - Build-Output (Resources/Public/Build/) ist gitignored — muss auf dem Server via `npm run build` oder CI erzeugt werden
 - DDEV additional.php liegt auch unter .ddev/ als Template — wird beim ersten `ddev typo3-setup` kopiert
+
+### Erledigte Punkte (2026-03-20)
+- fluid_styled_content aus require entfernt (war nicht verwendet)
+- FAL Garbage Collection implementiert: FlipbookCleanupService, CleanupCommand, Re-Konvertierung räumt auf, Löschung räumt auf
 
 **Why:** Dokumentation für Session-Kontinuität — neue Gespräche können hier anknüpfen.
 
