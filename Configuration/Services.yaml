@@ -7,6 +7,13 @@ services:
   Kit\DigitalPageFlip\:
     resource: '../Classes/*'
 
+  # Services used via container in DataHandlerHook (no DI possible in hooks)
+  Kit\DigitalPageFlip\Service\PdfConversionService:
+    public: true
+
+  Kit\DigitalPageFlip\Service\FlipbookCleanupService:
+    public: true
+
   Kit\DigitalPageFlip\EventListener\AfterFileAddedListener:
     tags:
       - name: event.listener

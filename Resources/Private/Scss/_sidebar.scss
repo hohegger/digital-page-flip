@@ -1,0 +1,87 @@
+// ==========================================================================
+// Sidebar — vertikale Toolbar (Desktop) / horizontale Topbar (Tablet)
+// ==========================================================================
+
+@use 'tokens' as *;
+
+.flipbook-viewer {
+
+    &__sidebar {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: var(--space-xl) 0.625rem;
+        background: var(--color-bg-sidebar);
+        border-right: var(--sidebar-border-size) solid var(--color-border);
+        box-shadow: var(--shadow-sidebar);
+
+        @include respond-to($bp-tablet) {
+            flex-direction: row;
+            padding: var(--space-md) var(--space-lg);
+            border-right: none;
+            border-bottom: var(--sidebar-border-size) solid var(--color-border);
+            box-shadow: var(--shadow-sidebar-top);
+        }
+    }
+
+    &__sidebar-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-sm);
+
+        @include respond-to($bp-tablet) {
+            flex-direction: row;
+            gap: var(--space-xs);
+        }
+    }
+
+    &__sidebar-divider {
+        width: var(--sidebar-divider-size);
+        height: 0;
+        border: none;
+        border-top: 1px solid var(--color-border-strong);
+        margin: var(--space-md) 0;
+
+        @include respond-to($bp-tablet) {
+            width: 0;
+            height: var(--sidebar-divider-size);
+            border-top: none;
+            border-left: 1px solid var(--color-border-strong);
+            margin: 0 var(--space-sm);
+        }
+    }
+
+    &__sidebar-btn {
+        @include interactive-base;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: var(--sidebar-btn-size);
+        height: var(--sidebar-btn-size);
+        padding: 0;
+        border-radius: var(--sidebar-radius);
+        color: var(--color-icon);
+
+        &:hover {
+            color: var(--color-icon-hover);
+            background: var(--color-hover-bg);
+        }
+
+        &:focus-visible {
+            @include focus-ring;
+        }
+
+        &:active {
+            background: var(--color-active-bg);
+            transition-duration: 0.05s;
+        }
+
+        svg {
+            width: var(--sidebar-icon-size);
+            height: var(--sidebar-icon-size);
+        }
+    }
+}

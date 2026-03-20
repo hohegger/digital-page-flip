@@ -21,7 +21,7 @@ return [
         '1' => [
             'showitem' => '
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
-                    title, description, pdf_file, publish_date,
+                    title, description, pdf_file,
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
                     hidden, starttime, endtime,
                 --div--;Pages,
@@ -143,16 +143,6 @@ return [
                     ['label' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook.conversion_status.completed', 'value' => 2],
                     ['label' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook.conversion_status.error', 'value' => 3],
                 ],
-            ],
-        ],
-        'publish_date' => [
-            'exclude' => true,
-            'label' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook.publish_date',
-            'config' => [
-                'type' => 'datetime',
-                'nullable' => true,
-                'default' => null,
-                'size' => 20,
             ],
         ],
     ],

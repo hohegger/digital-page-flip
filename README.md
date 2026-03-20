@@ -10,7 +10,8 @@ Online-Kataloge.
 | Composer          | `kit/digital-page-flip`                      |
 | TYPO3             | 12.4 LTS                                     |
 | PHP               | >= 8.2                                       |
-| Flipbook-Library  | StPageFlip (vanilla JS)                      |
+| Flipbook-Library  | page-flip (vanilla JS, npm)                  |
+| Frontend-Build    | Vite 6 + TypeScript 5 + SCSS (sass)          |
 | PDF-Konvertierung | Ghostscript 10.0 + ImageMagick 6.9           |
 
 ## Funktionsweise
@@ -22,8 +23,8 @@ Online-Kataloge.
    ImageMagick wandelt sie in WebP um.
 3. Die generierten Bilder werden im FAL-System abgelegt
    (`fileadmin/user_upload/tx_digitalpageflip/flipbook_<uid>/`).
-4. Im Frontend rendert StPageFlip die Seitenbilder als interaktiven
-   Katalog mit realistischem Blaettereffekt.
+4. Im Frontend rendert die page-flip Library die Seitenbilder als
+   interaktiven Katalog mit realistischem Blaettereffekt.
 
 ## Anleitung: Katalog anlegen
 
@@ -57,11 +58,9 @@ ddev exec .Build/bin/typo3 digitalpageflip:convert
 
 1. Zur gewuenschten Seite im **Seitenmodul** wechseln.
 2. **Neues Inhaltselement** erstellen.
-3. Tab **Plugins** waehlen und **General Plugin** einfuegen.
-4. Im Tab **Plugin** als **Selected Plugin** den Eintrag
-   *"Digital Page Flip - Flipbook"* auswaehlen.
-5. Unter **Plugin Options** das gewuenschte Flipbook auswaehlen.
-6. **Speichern** — im Frontend wird der Katalog angezeigt.
+3. Im Tab **Plugins** den Eintrag **Digital Page Flip** waehlen.
+4. Im Feld **Flipbook** den gewuenschten Katalog auswaehlen.
+5. **Speichern** — im Frontend wird der Katalog angezeigt.
 
 Wenn kein Flipbook ausgewaehlt wird, zeigt das Plugin eine
 Uebersicht aller veroeffentlichten Kataloge.
@@ -75,22 +74,30 @@ Der Katalog wird als interaktives Flipbook dargestellt:
   nebeneinander dargestellt (wie ein aufgeschlagenes Heft).
 - **Rueckseite**: Letzte Seite wieder einzeln.
 - **Navigation**: Vor-/Zurueck-Buttons und Seitenanzeige.
+- **Sidebar**: Vertikale Toolbar (Desktop) bzw. horizontale
+  Topbar (Tablet/Mobil) mit: Zur ersten Seite, PDF-Download,
+  Startseite, Datenschutz und Impressum (konfigurierbar).
 - **Tastatur**: Pfeiltasten links/rechts zum Blaettern.
 - **Touch**: Wisch-Gesten auf mobilen Geraeten.
 - **Mobil**: Einzelseiten-Modus auf kleinen Bildschirmen.
 
 ## Asset-Pipeline (Vite)
 
-Die Frontend-Assets (TypeScript + CSS) werden mit Vite gebaut.
+Die Frontend-Assets (TypeScript + SCSS) werden mit Vite gebaut.
 
 ### Quell-Dateien
 
 ```
 Resources/Private/
 ├── TypeScript/
-│   └── flipbook-init.ts    # StPageFlip Initialisierung
-└── Css/
-    └── flipbook.css         # Viewer-Styling
+│   └── flipbook-init.ts      # page-flip Initialisierung
+└── Scss/
+    ├── flipbook.scss          # Entry Point (@use imports)
+    ├── _tokens.scss           # Design Tokens ($vars + CSS --custom-properties)
+    ├── _viewer.scss           # Viewer Hauptkomponente (Layout, Stage, Book)
+    ├── _sidebar.scss          # Sidebar / Topbar
+    ├── _controls.scss         # Arrow Buttons + Pager
+    └── _list.scss             # List View
 ```
 
 ### Build-Output
@@ -118,7 +125,7 @@ npm run build
 
 ### Wie die Assets eingebunden werden
 
-1. **Vite** baut `flipbook-init.ts` und `flipbook.css` zu
+1. **Vite** baut `flipbook-init.ts` und `flipbook.scss` zu
    gehashten Dateien (z.B. `flipbook-DFlFGxUW.js`).
 2. Vite schreibt ein **Manifest** (`.vite/manifest.json`),
    das die Zuordnung Quelldatei → Build-Datei enthaelt.
@@ -140,17 +147,17 @@ export default defineConfig({
     rollupOptions: {
       input: {
         flipbook: 'Resources/Private/TypeScript/flipbook-init.ts',
-        styles: 'Resources/Private/Css/flipbook.css',
+        styles: 'Resources/Private/Scss/flipbook.scss',
       },
     },
   },
 });
 ```
 
-### StPageFlip-Konfiguration
+### TypoScript-Konfiguration
 
-Die Flipbook-Darstellung wird ueber TypoScript-Konstanten
-gesteuert:
+Die Flipbook-Darstellung und Sidebar-Links werden ueber
+TypoScript-Konstanten gesteuert (editierbar im Constant Editor):
 
 | Konstante                   | Default | Beschreibung            |
 | --------------------------- | ------- | ----------------------- |
@@ -158,10 +165,14 @@ gesteuert:
 | `flipbook.height`           | 880     | Seitenhoehe (px)        |
 | `flipbook.showCover`        | 1       | Cover als Einzelseite   |
 | `flipbook.swipeDistance`    | 30      | Swipe-Empfindlichkeit   |
+| `sidebar.privacyPageUid`   |         | Page UID Datenschutz    |
+| `sidebar.imprintPageUid`   |         | Page UID Impressum      |
+| `sidebar.homePageUid`      |         | Page UID Startseite     |
 
-Diese Werte beziehen sich auf eine **einzelne Seite**.
+Die Flipbook-Werte beziehen sich auf eine **einzelne Seite**.
 Im Doppelseiten-Modus verdoppelt sich die angezeigte Breite
-automatisch.
+automatisch. Sidebar-Links werden nur angezeigt, wenn die
+jeweilige Page UID gesetzt ist.
 
 ## Lokale Entwicklung (DDEV)
 
@@ -237,27 +248,24 @@ digital_page_flip/
 │   ├── Domain/Model/         # Flipbook, Page
 │   ├── Domain/Repository/    # FlipbookRepository
 │   ├── EventListener/        # PSR-14 Event Listener
-│   ├── Hook/                 # DataHandler Hook (Auto-Konvertierung)
 │   ├── Service/              # PdfConversionService
 │   └── ViewHelpers/          # FlipbookDataViewHelper
 ├── Configuration/
-│   ├── FlexForms/            # Plugin-Konfiguration
 │   ├── TCA/                  # Table Configuration
 │   └── TypoScript/           # Setup + Constants
 ├── Resources/
 │   ├── Private/
-│   │   ├── Css/              # Quell-CSS (Vite Entry)
 │   │   ├── Language/         # XLIFF Sprachdateien
 │   │   ├── Layouts/          # Fluid Layouts
-│   │   ├── Partials/         # Fluid Partials
+│   │   ├── Partials/         # Fluid Partials (Sidebar)
+│   │   ├── Scss/             # SCSS-Architektur (Vite Entry)
 │   │   ├── Templates/        # Fluid Templates
-│   │   └── TypeScript/       # StPageFlip Init (Vite Entry)
+│   │   └── TypeScript/       # page-flip Init (Vite Entry)
 │   └── Public/
 │       ├── Build/            # Vite-Output (generiert, gitignored)
 │       └── Icons/            # Extension-Icon
 ├── Tests/
-│   ├── Unit/
-│   └── Functional/
+│   └── Unit/
 ├── .ddev/                    # DDEV-Konfiguration
 ├── composer.json
 ├── ext_emconf.php

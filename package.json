@@ -7,8 +7,9 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^6.0",
-    "typescript": "^5.5"
+    "sass": "^1.98.0",
+    "typescript": "^5.5",
+    "vite": "^6.0"
   },
   "dependencies": {
     "page-flip": "^2.0.7"

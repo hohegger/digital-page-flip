@@ -11,7 +11,7 @@ ExtensionUtility::configurePlugin(
     'DigitalPageFlip',
     'Flipbook',
     [
-        FlipbookController::class => 'list,show',
+        FlipbookController::class => 'show',
     ],
     [
         FlipbookController::class => '',

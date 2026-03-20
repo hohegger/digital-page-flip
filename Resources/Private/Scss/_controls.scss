@@ -1,0 +1,66 @@
+// ==========================================================================
+// Controls — Navigation Arrows + Pager
+// ==========================================================================
+
+@use 'tokens' as *;
+
+.flipbook-viewer {
+
+    &__controls {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-block-start: var(--space-md);
+    }
+
+    // -----------------------------------------------------------------------
+    // Arrow Buttons
+    // -----------------------------------------------------------------------
+
+    &__btn {
+        @include interactive-base;
+
+        flex: 0 0 auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-md);
+        color: var(--color-arrow);
+
+        &:hover {
+            color: var(--color-arrow-hover);
+        }
+
+        &:focus-visible {
+            @include focus-ring;
+        }
+
+        &:disabled {
+            opacity: 0.15;
+            cursor: default;
+        }
+
+        @include respond-to($bp-phone) {
+            &--prev,
+            &--next {
+                display: none;
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Pager
+    // -----------------------------------------------------------------------
+
+    &__pager {
+        font-family: var(--font-system);
+        font-size: 0.8125rem;
+        font-variant-numeric: tabular-nums;
+        color: var(--color-text-muted);
+        letter-spacing: 0.02em;
+        min-width: 5ch;
+        text-align: center;
+        user-select: none;
+    }
+}

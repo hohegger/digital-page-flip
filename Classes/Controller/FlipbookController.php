@@ -9,36 +9,27 @@ use Kit\DigitalPageFlip\Domain\Repository\FlipbookRepository;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 final class FlipbookController extends ActionController
 {
     private const MANIFEST_PATH = 'EXT:digital_page_flip/Resources/Public/Build/.vite/manifest.json';
+
     public function __construct(
         private readonly FlipbookRepository $flipbookRepository,
         private readonly AssetCollector $assetCollector,
     ) {}
-    public function listAction(): ResponseInterface
+
+    public function showAction(): ResponseInterface
     {
         $contentData = $this->request->getAttribute('currentContentObject')?->data ?? [];
         $flipbookUid = (int) ($contentData['tx_digitalpageflip_flipbook'] ?? 0);
+        $flipbook = $this->flipbookRepository->findByUid($flipbookUid);
 
-        if ($flipbookUid > 0) {
-            $flipbook = $this->flipbookRepository->findByUid($flipbookUid);
-            if ($flipbook instanceof Flipbook) {
-                return (new ForwardResponse('show'))->withArguments(['flipbook' => $flipbook]);
-            }
+        if (!$flipbook instanceof Flipbook) {
+            return $this->htmlResponse();
         }
 
-        $flipbooks = $this->flipbookRepository->findPublished();
-        $this->view->assign('flipbooks', $flipbooks);
-
-        return $this->htmlResponse();
-    }
-
-    public function showAction(Flipbook $flipbook): ResponseInterface
-    {
         $this->injectViteAssets();
         $this->view->assign('flipbook', $flipbook);
 

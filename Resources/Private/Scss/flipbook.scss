@@ -1,0 +1,27 @@
+// ==========================================================================
+// Digital Page Flip — Stylesheet Entry Point
+// ==========================================================================
+//
+// Architektur:
+//   _tokens     → Design Tokens (SCSS $vars + CSS --custom-properties)
+//   _viewer     → Flipbook Viewer Hauptkomponente (Layout, Stage, Book)
+//   _sidebar    → Sidebar / Topbar (Navigation, Download, Links)
+//   _controls   → Arrow Buttons + Pager
+//   _list       → List View (Flipbook-Übersicht)
+//
+
+@use 'tokens';
+@use 'viewer';
+@use 'sidebar';
+@use 'controls';
+@use 'list';
+
+// ==========================================================================
+// Reduced Motion
+// ==========================================================================
+
+@media (prefers-reduced-motion: reduce) {
+    .flipbook-viewer {
+        --transition-duration: 0s;
+    }
+}

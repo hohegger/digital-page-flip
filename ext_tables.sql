@@ -8,8 +8,7 @@ CREATE TABLE tx_digitalpageflip_domain_model_flipbook (
 	pdf_file int(11) unsigned DEFAULT '0' NOT NULL,
 	pages int(11) unsigned DEFAULT '0' NOT NULL,
 	page_count int(11) DEFAULT '0' NOT NULL,
-	conversion_status int(11) DEFAULT '0' NOT NULL,
-	publish_date datetime DEFAULT NULL
+	conversion_status int(11) DEFAULT '0' NOT NULL
 );
 
 CREATE TABLE tx_digitalpageflip_domain_model_page (

@@ -1,3 +1,5 @@
+page.meta.viewport = width=device-width, initial-scale=1
+
 plugin.tx_digitalpageflip_flipbook = USER
 plugin.tx_digitalpageflip_flipbook {
   userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run

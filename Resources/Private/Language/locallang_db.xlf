@@ -36,9 +36,6 @@
             <trans-unit id="tx_digitalpageflip_domain_model_flipbook.conversion_status.error" resname="tx_digitalpageflip_domain_model_flipbook.conversion_status.error">
                 <source>Fehler</source>
             </trans-unit>
-            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.publish_date" resname="tx_digitalpageflip_domain_model_flipbook.publish_date">
-                <source>Veröffentlichungsdatum</source>
-            </trans-unit>
             <trans-unit id="tx_digitalpageflip_domain_model_page" resname="tx_digitalpageflip_domain_model_page">
                 <source>Seite</source>
             </trans-unit>

@@ -8,7 +8,8 @@ Vendor: Kit | Extension Key: digital_page_flip | Namespace: \Kit\DigitalPageFlip
 - TYPO3 v12.4 LTS (v14-ready)
 - PHP 8.2 (strict_types, readonly, final)
 - Extbase + Fluid (MVC)
-- StPageFlip (vanilla JS Flipbook-Library)
+- page-flip (vanilla JS Flipbook-Library, npm)
+- Vite 6 + TypeScript 5 + SCSS (sass)
 - Ghostscript 10.0 + ImageMagick 6.9 (PDF→WebP/PNG Konvertierung)
 
 ## Build & Test
@@ -33,11 +34,14 @@ Vendor: Kit | Extension Key: digital_page_flip | Namespace: \Kit\DigitalPageFlip
 - Classes/Service/ → Business Logic (PdfConversionService)
 - Configuration/TCA/ → Table Configuration
 - Resources/Private/Templates/ → Fluid Templates
-- Resources/Public/JavaScript/ → StPageFlip + Init-Script
+- Resources/Private/Partials/ → Fluid Partials (Sidebar)
+- Resources/Private/Scss/ → SCSS-Architektur (_tokens, _viewer, _sidebar, _controls, _list)
+- Resources/Private/TypeScript/ → page-flip Initialisierung
 
 ## Wichtige Dateien
 - Classes/Service/PdfConversionService.php → Kernlogik PDF-Konvertierung
-- Resources/Public/JavaScript/flipbook-init.js → StPageFlip Initialisierung
+- Resources/Private/TypeScript/flipbook-init.ts → page-flip Initialisierung
+- Resources/Private/Scss/_tokens.scss → Design Tokens (CSS Custom Properties)
 - Configuration/TCA/tx_digitalpageflip_domain_model_flipbook.php → Haupt-TCA
 - ext_tables.sql → Datenbank-Schema
 

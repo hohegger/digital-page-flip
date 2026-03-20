@@ -8,7 +8,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         flipbook: 'Resources/Private/TypeScript/flipbook-init.ts',
-        styles: 'Resources/Private/Css/flipbook.css',
+        styles: 'Resources/Private/Scss/flipbook.scss',
       },
       output: {
         entryFileNames: 'js/[name]-[hash].js',
