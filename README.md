@@ -103,7 +103,7 @@ Resources/Private/
 ### Build-Output
 
 ```
-Resources/Public/Build/      # Generiert, gitignored
+Resources/Public/Build/      # Generiert, committed fuer Distribution
 ├── .vite/
 │   └── manifest.json        # Asset-Mapping (Hash → Datei)
 ├── js/
@@ -185,7 +185,7 @@ jeweilige Page UID gesetzt ist.
 
 ```bash
 # 1. Repository klonen
-git clone git@github.com:<org>/digital-page-flip.git
+git clone git@github.com:hohegger/digital-page-flip.git
 cd digital-page-flip
 
 # 2. DDEV starten
@@ -262,7 +262,7 @@ digital_page_flip/
 │   │   ├── Templates/        # Fluid Templates
 │   │   └── TypeScript/       # page-flip Init (Vite Entry)
 │   └── Public/
-│       ├── Build/            # Vite-Output (generiert, gitignored)
+│       ├── Build/            # Vite-Output (generiert, committed fuer Distribution)
 │       └── Icons/            # Extension-Icon
 ├── Tests/
 │   └── Unit/
@@ -275,6 +275,27 @@ digital_page_flip/
 ├── package.json              # npm / Vite
 └── vite.config.js
 ```
+
+## Installation via Composer
+
+```bash
+# Repository als Quelle hinzufuegen (composer.json des TYPO3-Projekts)
+composer config repositories.digital-page-flip vcs https://github.com/hohegger/digital-page-flip.git
+
+# Dist-Downloads bevorzugen (fuer saubere Pakete ohne Development-Dateien)
+composer config preferred-install dist
+
+# Extension installieren
+composer require kit/digital-page-flip:^1.0
+```
+
+Da das Repository privat ist, wird ein GitHub Token benoetigt:
+
+```bash
+composer config github-oauth.github.com <token>
+```
+
+Token erstellen unter: https://github.com/settings/tokens/new (Scope: `repo`)
 
 ## Lizenz
 
