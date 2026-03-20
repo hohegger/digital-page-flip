@@ -4,6 +4,8 @@
             "WebSearch",
             "WebFetch(domain:docs.typo3.org)",
             "WebFetch(domain:github.com)",
+            "WebFetch(domain:api.github.com)",
+            "WebFetch(domain:raw.githubusercontent.com)",
             "WebFetch(domain:gitlab.com)",
             "Read(*)",
             "Search(*)",
@@ -17,7 +19,10 @@
             "Bash(wc:*)",
             "Bash(ddev exec:*)",
             "Bash(ddev mysql:*)",
-            "Bash(grep:*)"
+            "Bash(ddev composer:*)",
+            "Bash(grep:*)",
+            "Bash(grep -v \"^$\")",
+            "Bash(awk '{if\\(NF\\) print}')"
         ],
         "deny": []
     }
