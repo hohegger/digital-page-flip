@@ -46,7 +46,8 @@ final class DataHandlerHook
 
     private function processFlipbook(int $uid): void
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+        $container = GeneralUtility::getContainer();
+        $queryBuilder = $container->get(ConnectionPool::class)
             ->getQueryBuilderForTable(self::TABLE);
 
         $record = $queryBuilder
@@ -73,7 +74,6 @@ final class DataHandlerHook
             return;
         }
 
-        $container = GeneralUtility::getContainer();
         $conversionService = $container->get(PdfConversionService::class);
         $flipbookRepository = $container->get(FlipbookRepository::class);
         $persistenceManager = $container->get(PersistenceManager::class);
@@ -150,14 +150,8 @@ final class DataHandlerHook
 
     private function addFlashMessage(string $message, ContextualFeedbackSeverity $severity): void
     {
-        $flashMessage = GeneralUtility::makeInstance(
-            FlashMessage::class,
-            $message,
-            'PDF-Konvertierung',
-            $severity,
-            true,
-        );
-        GeneralUtility::makeInstance(FlashMessageService::class)
+        $flashMessage = new FlashMessage($message, 'PDF-Konvertierung', $severity, true);
+        GeneralUtility::getContainer()->get(FlashMessageService::class)
             ->getMessageQueueByIdentifier()
             ->enqueue($flashMessage);
     }

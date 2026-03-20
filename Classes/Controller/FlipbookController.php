@@ -9,6 +9,7 @@ use Kit\DigitalPageFlip\Domain\Repository\FlipbookRepository;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 final class FlipbookController extends ActionController
@@ -20,12 +21,13 @@ final class FlipbookController extends ActionController
     ) {}
     public function listAction(): ResponseInterface
     {
-        $flipbookUid = (int) ($this->settings['flipbookUid'] ?? 0);
+        $contentData = $this->request->getAttribute('currentContentObject')?->data ?? [];
+        $flipbookUid = (int) ($contentData['tx_digitalpageflip_flipbook'] ?? 0);
 
         if ($flipbookUid > 0) {
             $flipbook = $this->flipbookRepository->findByUid($flipbookUid);
             if ($flipbook instanceof Flipbook) {
-                return $this->showFlipbook($flipbook);
+                return (new ForwardResponse('show'))->withArguments(['flipbook' => $flipbook]);
             }
         }
 
@@ -34,11 +36,16 @@ final class FlipbookController extends ActionController
 
         return $this->htmlResponse();
     }
+
     public function showAction(Flipbook $flipbook): ResponseInterface
     {
-        return $this->showFlipbook($flipbook);
+        $this->injectViteAssets();
+        $this->view->assign('flipbook', $flipbook);
+
+        return $this->htmlResponse();
     }
-    private function showFlipbook(Flipbook $flipbook): ResponseInterface
+
+    private function injectViteAssets(): void
     {
         $assets = $this->resolveViteAssets();
 
@@ -56,12 +63,6 @@ final class FlipbookController extends ActionController
                 $assets['css'],
             );
         }
-
-        $this->view->assign('flipbook', $flipbook);
-        /** @phpstan-ignore method.notFound (setTemplate exists on concrete TYPO3 Fluid view) */
-        $this->view->setTemplate('Flipbook/Show');
-
-        return $this->htmlResponse();
     }
     /**
      * @return array{js: string, css: string}

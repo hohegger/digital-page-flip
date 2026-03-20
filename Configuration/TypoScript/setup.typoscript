@@ -6,7 +6,7 @@ plugin.tx_digitalpageflip_flipbook {
   vendorName = Kit
 }
 
-tt_content.list.20.digitalpageflip_flipbook =< plugin.tx_digitalpageflip_flipbook
+tt_content.digitalpageflip_flipbook =< plugin.tx_digitalpageflip_flipbook
 
 plugin.tx_digitalpageflip {
   view {

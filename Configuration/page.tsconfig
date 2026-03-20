@@ -1,0 +1,13 @@
+mod.wizards.newContentElement.wizardItems.plugins {
+    elements {
+        digitalpageflip_flipbook {
+            iconIdentifier = digital-page-flip-flipbook
+            title = LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tt_content.CType.digitalpageflip_flipbook
+            description = LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tt_content.CType.digitalpageflip_flipbook.description
+            tt_content_defValues {
+                CType = digitalpageflip_flipbook
+            }
+        }
+    }
+    show := addToList(digitalpageflip_flipbook)
+}

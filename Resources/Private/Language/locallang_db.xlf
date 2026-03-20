@@ -57,6 +57,15 @@
             <trans-unit id="plugin.title" resname="plugin.title">
                 <source>Digital Page Flip</source>
             </trans-unit>
+            <trans-unit id="tt_content.CType.digitalpageflip_flipbook" resname="tt_content.CType.digitalpageflip_flipbook">
+                <source>Digital Page Flip</source>
+            </trans-unit>
+            <trans-unit id="tt_content.CType.digitalpageflip_flipbook.description" resname="tt_content.CType.digitalpageflip_flipbook.description">
+                <source>Zeigt ein blätterbares Flipbook aus einem PDF-Katalog an.</source>
+            </trans-unit>
+            <trans-unit id="tt_content.tx_digitalpageflip_flipbook" resname="tt_content.tx_digitalpageflip_flipbook">
+                <source>Flipbook</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

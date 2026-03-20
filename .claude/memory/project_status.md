@@ -30,7 +30,13 @@ type: project
 - Functional Tests: nur Stubs vorhanden
 - Kein formales Sicherheitsaudit
 
-### Phase 4: TYPO3 v14 Migration — OFFEN (nach Relaunch)
+### Phase 4: TYPO3 v13 Readiness (2026-03-20)
+- Version-Constraints auf ^12.4 || ^13.4 erweitert (ext_emconf + composer.json)
+- Controller: setTemplate() durch ForwardResponse ersetzt (v13/v14-sicher)
+- GeneralUtility::makeInstance() durch Container/new ersetzt wo möglich
+- @todo markiert: DataHandler SC_OPTIONS Hooks → PSR-14 Events (erst in v13 möglich, keine v12-Alternative)
+
+### Phase 5: TYPO3 v14 Migration — OFFEN (nach Relaunch)
 
 ### Bekannte offene Punkte
 - Build-Output (Resources/Public/Build/) ist gitignored — muss auf dem Server via `npm run build` oder CI erzeugt werden
