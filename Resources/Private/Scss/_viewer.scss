@@ -8,7 +8,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    // Fallback fuer Browser ohne dvh-Support
+    height: calc(100vh - var(--viewer-offset, 0px));
+    // Moderne Browser: dvh passt sich an dynamische Toolbars an
     height: calc(100dvh - var(--viewer-offset, 0px));
+    // iOS Safari: Safe Area (Home Indicator) vom verfuegbaren Platz abziehen
+    padding-bottom: env(safe-area-inset-bottom, 0px);
     min-height: 500px;
     box-sizing: border-box;
 

@@ -1,10 +1,42 @@
 import { PageFlip } from 'page-flip';
 
-// Calculate viewer offset from top of viewport (accounts for headers/navbars)
-document.querySelectorAll<HTMLElement>('.flipbook-viewer').forEach((viewer) => {
-  const rect = viewer.getBoundingClientRect();
-  viewer.style.setProperty('--viewer-offset', `${Math.max(0, Math.round(rect.top))}px`);
-});
+// ---------------------------------------------------------------------------
+// Viewer Offset: Abstand vom Viewport-Oberkante zum Viewer-Element
+// ---------------------------------------------------------------------------
+
+/**
+ * Berechnet den Offset vom oberen Viewport-Rand zum Viewer-Element.
+ * Wird als CSS Custom Property gesetzt, damit die CSS-Hoehe korrekt ist.
+ */
+function updateViewerOffsets(): void {
+  document.querySelectorAll<HTMLElement>('.flipbook-viewer').forEach((viewer) => {
+    const rect = viewer.getBoundingClientRect();
+    viewer.style.setProperty('--viewer-offset', `${Math.max(0, Math.round(rect.top))}px`);
+  });
+}
+
+// Initiale Berechnung
+updateViewerOffsets();
+
+// iOS Safari: Offset aktualisieren wenn sich der Viewport aendert
+// (Adressleiste ein-/ausblenden, Tastatur, Orientierung)
+// Debounced um Layout Thrashing zu vermeiden — visualViewport.resize
+// feuert bei jedem Frame waehrend der iOS Toolbar-Animation
+let offsetTimeout: ReturnType<typeof setTimeout>;
+const debouncedOffsetUpdate = (): void => {
+  clearTimeout(offsetTimeout);
+  offsetTimeout = setTimeout(updateViewerOffsets, 100);
+};
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', debouncedOffsetUpdate);
+} else {
+  window.addEventListener('resize', debouncedOffsetUpdate);
+}
+
+// ---------------------------------------------------------------------------
+// Flipbook Initialisierung
+// ---------------------------------------------------------------------------
 
 document.querySelectorAll<HTMLElement>('.flipbook-viewer__book').forEach((container) => {
   const pages: string[] = JSON.parse(container.dataset.flipbookPages || '[]');
@@ -36,19 +68,29 @@ document.querySelectorAll<HTMLElement>('.flipbook-viewer__book').forEach((contai
     container.appendChild(pageEl);
   });
 
-  // Calculate max dimensions from available space (use both width and height)
-  const stage = container.closest('.flipbook-viewer__stage') as HTMLElement | null;
-  const availableWidth = stage ? stage.clientWidth : window.innerWidth;
-  const availableHeight = stage ? stage.clientHeight : window.innerHeight;
-  const pagesVisible = isMobile ? 1 : 2;
+  /**
+   * Berechnet die maximalen Seitenabmessungen aus dem verfuegbaren Platz.
+   * Beruecksichtigt sowohl Breite als auch Hoehe des Stage-Containers.
+   */
+  function calcMaxDimensions(): { maxPageWidth: number; maxPageHeight: number } {
+    const stage = container.closest('.flipbook-viewer__stage') as HTMLElement | null;
+    const pagesVisible = isMobile ? 1 : 2;
 
-  // Fit by width
-  const maxByWidth = Math.floor(availableWidth / pagesVisible);
-  // Fit by height (derive page width from available height)
-  const maxByHeight = Math.floor(availableHeight / aspectRatio);
-  // Use the smaller to ensure the book fits both dimensions
-  const maxPageWidth = Math.min(maxByWidth, maxByHeight);
-  const maxPageHeight = Math.floor(maxPageWidth * aspectRatio);
+    const availableWidth = stage ? stage.clientWidth : window.innerWidth;
+    const availableHeight = stage ? stage.clientHeight : window.innerHeight;
+
+    // Fit by width
+    const maxByWidth = Math.floor(availableWidth / pagesVisible);
+    // Fit by height (derive page width from available height)
+    const maxByHeight = Math.floor(availableHeight / aspectRatio);
+    // Use the smaller to ensure the book fits both dimensions
+    const maxPageWidth = Math.min(maxByWidth, maxByHeight);
+    const maxPageHeight = Math.floor(maxPageWidth * aspectRatio);
+
+    return { maxPageWidth, maxPageHeight };
+  }
+
+  const { maxPageWidth, maxPageHeight } = calcMaxDimensions();
 
   const pageFlip = new PageFlip(container, {
     width,
@@ -71,7 +113,7 @@ document.querySelectorAll<HTMLElement>('.flipbook-viewer__book').forEach((contai
     clickEventForward: true,
   });
 
-  // Load from DOM elements → native browser rendering quality
+  // Load from DOM elements -> native browser rendering quality
   const pageElements = container.querySelectorAll('.flipbook-viewer__page');
   pageFlip.loadFromHTML(pageElements as NodeListOf<HTMLElement>);
 
@@ -95,7 +137,59 @@ document.querySelectorAll<HTMLElement>('.flipbook-viewer__book').forEach((contai
     // Graceful fallback: if internal API changes, pages stay as-is
   }
 
+  // ---------------------------------------------------------------------------
+  // ResizeObserver: maxWidth/maxHeight dynamisch aktualisieren
+  // ---------------------------------------------------------------------------
+  // Warum ResizeObserver statt window.resize?
+  // 1. page-flip hat bereits einen eigenen window.resize Handler (UI.ts Zeile 66),
+  //    der intern update() aufruft — aber mit den ALTEN maxWidth/maxHeight Werten.
+  // 2. ResizeObserver auf dem Stage-Element reagiert praeziser auf Container-Aenderungen.
+  // 3. Der Debounce stellt sicher, dass die Settings aktualisiert sind, BEVOR
+  //    pageFlip.update() aufgerufen wird.
+  //
+  // Interne API verifiziert fuer page-flip v2.x (nodlim/page-flip):
+  //   - PageFlip.ts:29 → "private readonly setting: FlipSetting" (Singular!)
+  //   - Render erhaelt dieselbe Objekt-Referenz (PageFlip.ts:106)
+  //   - UI.ts:59-62 → autoSize setzt container.style.maxWidth einmalig
+  // ---------------------------------------------------------------------------
+  const stage = container.closest('.flipbook-viewer__stage') as HTMLElement | null;
+
+  if (stage) {
+    let resizeTimeout: ReturnType<typeof setTimeout>;
+
+    const observer = new ResizeObserver(() => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const dims = calcMaxDimensions();
+
+        // page-flip Settings-Objekt aktualisieren (interne API, abgesichert mit try/catch)
+        try {
+          const setting = (pageFlip as any).setting;
+          if (setting) {
+            setting.maxWidth = dims.maxPageWidth;
+            setting.maxHeight = dims.maxPageHeight;
+          }
+
+          // autoSize setzt bei Init einen inline style auf dem Container:
+          //   container.style.maxWidth = setting.maxWidth * 2 + 'px'  (UI.ts Zeile 61)
+          // Dieser inline Style wird NICHT automatisch aktualisiert.
+          container.style.maxWidth = dims.maxPageWidth * (isMobile ? 1 : 2) + 'px';
+        } catch (_) {
+          // Graceful fallback: page-flip internes API hat sich geaendert
+        }
+
+        // page-flip neu rendern: setzt boundsRect = null → calculateBoundsRect()
+        // liest die aktualisierten setting.maxWidth/maxHeight
+        pageFlip.update();
+      }, 150);
+    });
+
+    observer.observe(stage);
+  }
+
+  // ---------------------------------------------------------------------------
   // Navigation
+  // ---------------------------------------------------------------------------
   const viewer = container.closest('.flipbook-viewer');
   const prevBtn = document.querySelector<HTMLButtonElement>(`[data-flipbook-prev="${uid}"]`);
   const nextBtn = document.querySelector<HTMLButtonElement>(`[data-flipbook-next="${uid}"]`);
