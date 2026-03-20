@@ -73,7 +73,7 @@ $bp-phone: 768px;
 
     // Layout
     --max-width: 1600px;
-    --content-padding: clamp(var(--space-xl), 3vh, 2.5rem) clamp(var(--space-md), 2vw, 1.5rem);
+    --content-padding: var(--space-md) clamp(var(--space-md), 2vw, 1.5rem);
     --stage-gap: clamp(var(--space-md), 2vw, 1.5rem);
 
     // Shadows
