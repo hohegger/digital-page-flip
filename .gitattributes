@@ -22,3 +22,4 @@ package.json           export-ignore
 package-lock.json      export-ignore
 composer.lock          export-ignore
 CLAUDE.md              export-ignore
+/.docs                 export-ignore

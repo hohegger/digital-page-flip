@@ -37,3 +37,6 @@ composer.lock
 
 # Superpowers brainstorm sessions
 .superpowers/
+
+# Projekt-Dokumentation (lokal)
+.docs/
