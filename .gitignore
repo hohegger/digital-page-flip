@@ -34,3 +34,6 @@ composer.lock
 
 # PHPUnit cache
 .phpunit.result.cache
+
+# Superpowers brainstorm sessions
+.superpowers/
