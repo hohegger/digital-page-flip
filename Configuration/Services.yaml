@@ -25,6 +25,7 @@ services:
       - name: console.command
         command: 'digitalpageflip:convert'
         description: 'Convert PDF files of flipbook records to page images'
+        schedulable: true
 
   Kit\DigitalPageFlip\Command\CleanupCommand:
     tags:
