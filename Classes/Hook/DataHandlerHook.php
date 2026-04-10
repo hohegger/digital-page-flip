@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Kit\DigitalPageFlip\Hook;
 
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
-use Kit\DigitalPageFlip\Domain\Repository\FlipbookRepository;
 use Kit\DigitalPageFlip\Service\FlipbookCleanupService;
-use Kit\DigitalPageFlip\Service\PdfConversionService;
 use Throwable;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -17,7 +15,6 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 final class DataHandlerHook
 {
@@ -47,8 +44,8 @@ final class DataHandlerHook
     private function processFlipbook(int $uid, DataHandler $dataHandler): void
     {
         $container = GeneralUtility::getContainer();
-        $queryBuilder = $container->get(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+        $connectionPool = $container->get(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable(self::TABLE);
 
         $record = $queryBuilder
             ->select('pdf_file', 'conversion_status', 'page_count')
@@ -75,47 +72,22 @@ final class DataHandlerHook
             return;
         }
 
-        $conversionService = $container->get(PdfConversionService::class);
-        $flipbookRepository = $container->get(FlipbookRepository::class);
-        $persistenceManager = $container->get(PersistenceManager::class);
-        $logger = $container->get(LogManager::class)->getLogger(self::class);
+        $connectionPool->getConnectionForTable(self::TABLE)->update(
+            self::TABLE,
+            ['conversion_status' => Flipbook::STATUS_PENDING],
+            ['uid' => $uid],
+        );
 
-        $flipbook = $flipbookRepository->findByUid($uid);
-        if ($flipbook === null) {
-            return;
-        }
-
-        try {
-            $conversionService->convert($flipbook);
-            $persistenceManager->persistAll();
-
-            $logger->info('Automatic PDF conversion completed.', [
-                'flipbookUid' => $uid,
-                'pageCount' => $flipbook->getPageCount(),
-            ]);
-
-            $this->addFlashMessage(
-                sprintf('PDF wurde erfolgreich konvertiert. %d Seiten generiert.', $flipbook->getPageCount()),
-                ContextualFeedbackSeverity::OK,
-            );
-        } catch (Throwable $e) {
-            $logger->error('Automatic PDF conversion failed.', [
-                'flipbookUid' => $uid,
-                'error' => $e->getMessage(),
-            ]);
-
-            $this->addFlashMessage(
-                sprintf('PDF-Konvertierung fehlgeschlagen: %s', $e->getMessage()),
-                ContextualFeedbackSeverity::ERROR,
-            );
-        }
+        $this->addFlashMessage(
+            'Die PDF-Konvertierung wurde eingeplant und startet in Kürze automatisch.',
+            ContextualFeedbackSeverity::INFO,
+        );
     }
 
     /**
      * Called after DataHandler processes command map operations (delete, copy, move).
      * Cleans up FAL files and references when a flipbook is deleted.
-     */
-    /**
+     *
      * @param array<string, mixed> $pasteDatamap
      */
     public function processCmdmap_postProcess(
