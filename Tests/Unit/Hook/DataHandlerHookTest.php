@@ -8,7 +8,6 @@ use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Hook\DataHandlerHook;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 
 final class DataHandlerHookTest extends TestCase
 {
@@ -54,26 +53,24 @@ final class DataHandlerHookTest extends TestCase
     #[Test]
     public function pdfChangedDetectionViaDatamap(): void
     {
-        $dataHandler = new DataHandler();
-        $dataHandler->datamap = [
+        $datamap = [
             'tx_digitalpageflip_domain_model_flipbook' => [
                 42 => ['pdf_file' => 1],
             ],
         ];
 
-        self::assertTrue(isset($dataHandler->datamap['tx_digitalpageflip_domain_model_flipbook'][42]['pdf_file']));
+        self::assertTrue(isset($datamap['tx_digitalpageflip_domain_model_flipbook'][42]['pdf_file']));
     }
 
     #[Test]
     public function noPdfChangeDetectionViaDatamap(): void
     {
-        $dataHandler = new DataHandler();
-        $dataHandler->datamap = [
+        $datamap = [
             'tx_digitalpageflip_domain_model_flipbook' => [
                 42 => ['title' => 'Updated Title'],
             ],
         ];
 
-        self::assertFalse(isset($dataHandler->datamap['tx_digitalpageflip_domain_model_flipbook'][42]['pdf_file']));
+        self::assertFalse(isset($datamap['tx_digitalpageflip_domain_model_flipbook'][42]['pdf_file']));
     }
 }

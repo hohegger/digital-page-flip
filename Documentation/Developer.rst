@@ -14,6 +14,17 @@ The extension follows standard Extbase/Fluid conventions:
     Ghostscript (PDF → PNG) and ImageMagick (PNG → WebP). Files are
     stored via FAL in ``fileadmin/user_upload/tx_digitalpageflip/``.
 
+**DataHandlerHook** (``Kit\DigitalPageFlip\Hook\DataHandlerHook``)
+    Listens to DataHandler save operations. When a flipbook with a PDF
+    is saved, the hook sets ``conversion_status`` to ``PENDING``. The
+    actual conversion is handled asynchronously by the Scheduler task.
+
+**ConvertPdfCommand** (``Kit\DigitalPageFlip\Command\ConvertPdfCommand``)
+    Symfony Console command (``digitalpageflip:convert``). Finds all
+    flipbooks with status ``PENDING`` or ``ERROR`` and runs the
+    conversion. Registered as ``schedulable: true`` in Services.yaml,
+    so it can be configured as a recurring TYPO3 Scheduler task.
+
 **FlipbookController** (``Kit\DigitalPageFlip\Controller\FlipbookController``)
     Extbase ActionController. Reads the Vite manifest to register
     hashed JS/CSS assets via the TYPO3 AssetCollector.

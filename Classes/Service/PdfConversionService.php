@@ -231,6 +231,7 @@ final readonly class PdfConversionService
         $startTime = time();
         $output = '';
         $timedOut = false;
+        $exitCode = -1;
 
         stream_set_blocking($pipes[1], false);
         stream_set_blocking($pipes[2], false);
@@ -238,6 +239,7 @@ final readonly class PdfConversionService
         while (true) {
             $status = proc_get_status($process);
             if (!$status['running']) {
+                $exitCode = $status['exitcode'];
                 break;
             }
             if ((time() - $startTime) > self::GS_TIMEOUT_SECONDS) {
@@ -262,7 +264,7 @@ final readonly class PdfConversionService
             );
         }
 
-        $exitCode = proc_close($process);
+        proc_close($process);
 
         if ($exitCode !== 0) {
             $combinedOutput = trim($output . "\n" . $stderr);

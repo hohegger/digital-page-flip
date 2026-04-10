@@ -5,6 +5,18 @@ Alle relevanten Änderungen an dieser Extension werden in dieser Datei dokumenti
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.2.0] - 2026-04-10
+
+### Changed
+
+- PDF-Konvertierung laeuft jetzt asynchron per TYPO3 Scheduler statt synchron beim Speichern
+- DataHandlerHook setzt nur noch Status PENDING und zeigt Info-Flash-Message
+- ConvertPdfCommand ist als Scheduler-Task verfuegbar (`schedulable: true`)
+
+### Fixed
+
+- Ghostscript Exit-Code wurde falsch gelesen — `proc_close()` liefert -1 wenn `proc_get_status()` den Code bereits konsumiert hat
+
 ## [1.1.0] - 2026-03-20
 
 ### Security
