@@ -12,14 +12,16 @@ Creating a flipbook
 3. Click **Create new record** and choose **Flipbook**.
 4. Enter a **title** (e.g. "Weekly Flyer KW 12").
 5. Upload a PDF file in the **PDF file** field (or select one from FAL).
-6. **Save** — the conversion starts automatically.
-   A green flash message confirms:
-   *"PDF was successfully converted. X pages generated."*
-7. The **conversion status** changes to "Completed" and the generated
-   pages are visible in the Pages tab.
+6. **Save** — the conversion is scheduled automatically.
+   A blue info message confirms:
+   *"Die PDF-Konvertierung wurde eingeplant und startet in Kürze automatisch."*
+7. The TYPO3 **Scheduler** picks up the task within 1-2 minutes.
+   The **conversion status** (visible in the Pages tab) changes from
+   "Pending" to "Processing" and finally to "Completed".
 
-If conversion fails (red flash message), set the status back to
-"Pending" and save again. Alternatively, trigger conversion via CLI:
+If conversion fails, the status changes to "Error". The Scheduler
+retries automatically on the next run. You can also trigger conversion
+manually via CLI:
 
 .. code-block:: bash
 
@@ -64,3 +66,19 @@ Frontend interactions
 **Responsive:**
     The flipbook dynamically adapts to viewport and container size
     changes, including iOS Safari toolbar show/hide.
+
+Scheduler setup
+================
+
+The PDF conversion runs asynchronously via the TYPO3 Scheduler.
+After installation, set up the Scheduler task:
+
+1. Go to **System > Scheduler** in the TYPO3 backend.
+2. Create a new task: **Execute console commands** →
+   ``digitalpageflip:convert``.
+3. Set type to **Recurring** with an interval of **120 seconds**
+   (2 minutes).
+4. Activate and save the task.
+
+Make sure the TYPO3 Scheduler is triggered by a system cron job
+(e.g. every minute via ``vendor/bin/typo3 scheduler:run``).
