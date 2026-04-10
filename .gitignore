@@ -40,3 +40,8 @@ composer.lock
 
 # Projekt-Dokumentation (lokal)
 .docs/
+
+# Claude Code (lokal)
+.claude/docs/
+.claude/memory/
+.claude/rules/
