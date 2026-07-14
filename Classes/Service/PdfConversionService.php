@@ -67,7 +67,9 @@ final readonly class PdfConversionService
             // Clean up existing pages before re-conversion
             if ($flipbook->getUid() !== null) {
                 $this->cleanupService->cleanupForReconversion($flipbook->getUid());
-                $flipbook->setPages(new ObjectStorage());
+                /** @var ObjectStorage<Page> $emptyPages */
+                $emptyPages = new ObjectStorage();
+                $flipbook->setPages($emptyPages);
                 $flipbook->setPageCount(0);
                 $this->flipbookRepository->update($flipbook);
                 $this->persistenceManager->persistAll();

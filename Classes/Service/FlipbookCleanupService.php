@@ -238,6 +238,12 @@ final readonly class FlipbookCleanupService
                 foreach ($orphanedFiles as $fileRecord) {
                     try {
                         $file = $storage->getFile((string) $fileRecord['identifier']);
+                        if ($file === null) {
+                            $this->logger->warning('Could not delete orphaned file: file could not be resolved from storage.', [
+                                'identifier' => $fileRecord['identifier'],
+                            ]);
+                            continue;
+                        }
                         $file->delete();
                     } catch (Throwable $e) {
                         $this->logger->warning('Could not delete orphaned file.', [

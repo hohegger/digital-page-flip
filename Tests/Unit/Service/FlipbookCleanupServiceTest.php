@@ -232,6 +232,39 @@ final class FlipbookCleanupServiceTest extends TestCase
         self::assertSame(0, $result['folders']);
     }
 
+    #[Test]
+    public function collectOrphansSkipsFileDeletionWhenStorageResolvesNoFile(): void
+    {
+        $orphanedFileRow = [['uid' => 5, 'identifier' => '/user_upload/tx_digitalpageflip/flipbook_5/page_001.webp']];
+
+        $emptyQueryBuilder = $this->createQueryBuilderReturning([]);
+        $fileQueryBuilder = $this->createQueryBuilderReturning($orphanedFileRow);
+
+        $this->connectionPoolMock
+            ->method('getQueryBuilderForTable')
+            ->willReturnCallback(fn(string $table) => $table === 'sys_file' ? $fileQueryBuilder : $emptyQueryBuilder);
+
+        $this->storageMock->method('hasFolder')->willReturn(false);
+
+        // Storage resolves no file for the identifier (deleted on disk, stale DB row, ...)
+        $this->storageMock
+            ->method('getFile')
+            ->willReturn(null);
+
+        $this->loggerMock
+            ->expects(self::once())
+            ->method('warning')
+            ->with(
+                'Could not delete orphaned file: file could not be resolved from storage.',
+                self::callback(static fn(array $context): bool => $context['identifier'] === $orphanedFileRow[0]['identifier']),
+            );
+
+        // Must not throw despite getFile() returning null
+        $result = $this->subject->collectOrphans(false);
+
+        self::assertSame(1, $result['files']);
+    }
+
     // ---------------------------------------------------------------
     // Helpers
     // ---------------------------------------------------------------
