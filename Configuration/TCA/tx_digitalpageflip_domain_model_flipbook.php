@@ -14,7 +14,6 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'searchFields' => 'title,description',
         'iconfile' => 'EXT:digital_page_flip/Resources/Public/Icons/Extension.svg',
     ],
     'types' => [
@@ -128,6 +127,7 @@ return [
                 'type' => 'input',
                 'size' => 10,
                 'readOnly' => true,
+                'searchable' => false,
             ],
         ],
         'conversion_status' => [
