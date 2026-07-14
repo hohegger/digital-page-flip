@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kit\DigitalPageFlip\Domain\Model;
 
-use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
-use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
+use TYPO3\CMS\Extbase\Attribute\ORM\Cascade;
+use TYPO3\CMS\Extbase\Attribute\ORM\Lazy;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -27,7 +27,7 @@ final class Flipbook extends AbstractEntity
      * @var ObjectStorage<Page>
      */
     #[Lazy]
-    #[Cascade(['value' => 'remove'])]
+    #[Cascade(value: 'remove')]
     protected ObjectStorage $pages;
 
     protected int $pageCount = 0;
