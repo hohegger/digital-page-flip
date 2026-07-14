@@ -7,7 +7,7 @@ Installation
 Requirements
 ============
 
-- TYPO3 12.4 - 13.4
+- TYPO3 14.3
 - PHP >= 8.2
 - Ghostscript >= 10.0
 - ImageMagick >= 6.9

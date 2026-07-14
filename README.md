@@ -1,7 +1,6 @@
 # Digital Page Flip
 
-[![TYPO3 12](https://img.shields.io/badge/TYPO3-12-orange.svg)](https://get.typo3.org/version/12)
-[![TYPO3 13](https://img.shields.io/badge/TYPO3-13-orange.svg)](https://get.typo3.org/version/13)
+[![TYPO3 14](https://img.shields.io/badge/TYPO3-14-orange.svg)](https://get.typo3.org/version/14)
 [![Latest Stable Version](https://img.shields.io/github/v/tag/hohegger/digital-page-flip?label=version)](https://github.com/hohegger/digital-page-flip)
 [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 
@@ -47,11 +46,14 @@ See the [full documentation](Documentation/Index.rst) for detailed instructions.
 
 ## Requirements
 
-- TYPO3 12.4 - 13.4
+- TYPO3 14.3
 - PHP >= 8.2
 - Ghostscript >= 10.0
 - ImageMagick >= 6.9
 - Node.js >= 22 (development only)
+
+> **Version compatibility:** For TYPO3 v12/v13 use the 1.x line (`^1`);
+> the 2.x line is TYPO3 v14-only.
 
 ## License
 

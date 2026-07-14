@@ -5,6 +5,20 @@ Alle relevanten Änderungen an dieser Extension werden in dieser Datei dokumenti
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [2.0.0] - 2026-07-14
+
+### Changed
+
+- **BREAKING:** TYPO3 v14-only release (`^14.3`). For TYPO3 v12/v13 use the 1.x line (`^1`).
+- Migrated `FlipbookDataViewHelper` from `renderStatic()` to `render()` (Fluid 5).
+- Extbase model uses `Attribute\ORM` namespace with named `Cascade` argument.
+- `PdfConversionService` uses the v14 `Enum\DuplicationBehavior` (class removed in v14).
+- Rector config raised to the TYPO3 v14 level set.
+
+### Removed
+
+- TCA `ctrl.searchFields` option (removed in TYPO3 v14, #106972) — replaced by per-field `searchable`.
+
 ## [1.2.0] - 2026-04-10
 
 ### Changed
