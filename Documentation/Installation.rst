@@ -52,7 +52,7 @@ development files):
 
 .. code-block:: bash
 
-    composer require kit/digital-page-flip:^1.0
+    composer require kit/digital-page-flip
 
 **5. Activate:**
 
