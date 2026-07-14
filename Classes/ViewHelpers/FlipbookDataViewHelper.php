@@ -6,6 +6,7 @@ namespace Kit\DigitalPageFlip\ViewHelpers;
 
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Domain\Model\Page;
+use TypeError;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -27,14 +28,21 @@ final class FlipbookDataViewHelper extends AbstractViewHelper
         /** @var Page $page */
         foreach ($flipbook->getPages() as $page) {
             $image = $page->getImage();
-            if ($image !== null) {
+            if ($image === null) {
+                continue;
+            }
+
+            try {
                 $originalResource = $image->getOriginalResource();
-                if ($originalResource !== null) {
-                    $publicUrl = $originalResource->getPublicUrl();
-                    if ($publicUrl !== null) {
-                        $pages[] = PathUtility::getAbsoluteWebPath($publicUrl);
-                    }
-                }
+            } catch (TypeError) {
+                // TYPO3 v14: getOriginalResource() ist non-nullable typisiert und wirft
+                // einen \TypeError, wenn die Original-Resource fehlt (z. B. gelöschte Datei).
+                continue;
+            }
+
+            $publicUrl = $originalResource->getPublicUrl();
+            if ($publicUrl !== null) {
+                $pages[] = PathUtility::getAbsoluteWebPath($publicUrl);
             }
         }
 

@@ -9,6 +9,7 @@ use Kit\DigitalPageFlip\Domain\Model\Page;
 use Kit\DigitalPageFlip\ViewHelpers\FlipbookDataViewHelper;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use TypeError;
 use TYPO3\CMS\Core\Core\ApplicationContext;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Resource\FileReference as CoreFileReference;
@@ -79,12 +80,16 @@ final class FlipbookDataViewHelperTest extends TestCase
     }
 
     #[Test]
-    public function renderSkipsPagesWithNullOriginalResource(): void
+    public function renderSkipsPagesWithMissingOriginalResource(): void
     {
         $flipbook = new Flipbook();
 
+        // TYPO3 v14: getOriginalResource() ist non-nullable typisiert (FileReference).
+        // Fehlt die Original-Resource, wirft der Getter einen \TypeError statt null zurückzugeben.
         $extbaseRef = $this->createMock(FileReference::class);
-        $extbaseRef->method('getOriginalResource')->willReturn(null);
+        $extbaseRef->method('getOriginalResource')->willThrowException(
+            new TypeError('TYPO3\CMS\Extbase\Domain\Model\FileReference::getOriginalResource(): Return value must be of type TYPO3\CMS\Core\Resource\FileReference, none returned'),
+        );
 
         $page = new Page();
         $page->setPageNumber(1);
