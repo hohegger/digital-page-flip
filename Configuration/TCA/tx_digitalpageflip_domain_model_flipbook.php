@@ -14,6 +14,9 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
+        'security' => [
+            'ignorePageTypeRestriction' => true,
+        ],
         'iconfile' => 'EXT:digital_page_flip/Resources/Public/Icons/Extension.svg',
     ],
     'types' => [
