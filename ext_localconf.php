@@ -16,7 +16,6 @@ ExtensionUtility::configurePlugin(
     [
         FlipbookController::class => '',
     ],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
 );
 
 // DataHandler hooks: still supported in TYPO3 v14 (no full PSR-14 replacement yet).
