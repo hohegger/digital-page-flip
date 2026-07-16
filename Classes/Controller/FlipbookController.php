@@ -24,9 +24,6 @@ final class FlipbookController extends ActionController
 
     public function showAction(): ResponseInterface
     {
-        // Note: no nullsafe operator needed here — PHP's `??` already guards property
-        // access on a possibly-null value without emitting a warning, so this stays
-        // fully defensive even outside a ContentObject context (e.g. tests, USER_INT edge cases).
         $contentData = $this->request->getAttribute('currentContentObject')->data ?? [];
         $flipbookUid = (int) ($contentData['tx_digitalpageflip_flipbook'] ?? 0);
         $flipbook = $this->flipbookRepository->findByUid($flipbookUid);
