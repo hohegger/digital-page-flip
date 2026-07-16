@@ -6,7 +6,7 @@ namespace Kit\DigitalPageFlip\ViewHelpers;
 
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Domain\Model\Page;
-use TypeError;
+use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -34,9 +34,9 @@ final class FlipbookDataViewHelper extends AbstractViewHelper
 
             try {
                 $originalResource = $image->getOriginalResource();
-            } catch (TypeError) {
-                // TYPO3 v14: getOriginalResource() ist non-nullable typisiert und wirft
-                // einen \TypeError, wenn die Original-Resource fehlt (z. B. gelöschte Datei).
+            } catch (ResourceDoesNotExistException) {
+                // Fehlende sys_file_reference (z. B. gelöschte Datei): Seite überspringen
+                // statt das Frontend-Rendering abbrechen zu lassen.
                 continue;
             }
 
