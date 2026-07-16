@@ -24,7 +24,6 @@ use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 final readonly class PdfConversionService
 {
@@ -67,9 +66,8 @@ final readonly class PdfConversionService
             // Clean up existing pages before re-conversion
             if ($flipbook->getUid() !== null) {
                 $this->cleanupService->cleanupForReconversion($flipbook->getUid());
-                /** @var ObjectStorage<Page> $emptyPages */
-                $emptyPages = new ObjectStorage();
-                $flipbook->setPages($emptyPages);
+                $pages = $flipbook->getPages();
+                $pages->removeAll(clone $pages);
                 $flipbook->setPageCount(0);
                 $this->flipbookRepository->update($flipbook);
                 $this->persistenceManager->persistAll();
