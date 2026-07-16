@@ -1,7 +1,6 @@
 # Digital Page Flip
 
-[![TYPO3 12](https://img.shields.io/badge/TYPO3-12-orange.svg)](https://get.typo3.org/version/12)
-[![TYPO3 13](https://img.shields.io/badge/TYPO3-13-orange.svg)](https://get.typo3.org/version/13)
+[![TYPO3 14](https://img.shields.io/badge/TYPO3-14-orange.svg)](https://get.typo3.org/version/14)
 [![Latest Stable Version](https://img.shields.io/github/v/tag/hohegger/digital-page-flip?label=version)](https://github.com/hohegger/digital-page-flip)
 [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 
@@ -33,6 +32,21 @@ vendor/bin/typo3 extension:setup
 vendor/bin/typo3 cache:flush
 ```
 
+### Activate the site set (required)
+
+Since 2.0.0 the extension ships its TypoScript as a **site set** instead of a
+static TypoScript template. Add it to your site configuration — either in the
+**Sites** module (*Sets for this Site*) or in
+`config/sites/<identifier>/config.yaml`:
+
+```yaml
+dependencies:
+  - kit/digital-page-flip
+```
+
+Without this step the flipbook content element renders without templates and
+settings.
+
 > **Private repository:** A GitHub token with `repo` scope is required.
 > See the [Installation documentation](Documentation/Installation.rst) for details.
 
@@ -47,11 +61,15 @@ See the [full documentation](Documentation/Index.rst) for detailed instructions.
 
 ## Requirements
 
-- TYPO3 12.4 - 13.4
+- TYPO3 14.3 (with `typo3/cms-fluid-styled-content` — the site set loads it
+  automatically as a dependency)
 - PHP >= 8.2
 - Ghostscript >= 10.0
 - ImageMagick >= 6.9
 - Node.js >= 22 (development only)
+
+> **Version compatibility:** For TYPO3 v12/v13 use the 1.x line (`^1`);
+> the 2.x line is TYPO3 v14-only.
 
 ## License
 

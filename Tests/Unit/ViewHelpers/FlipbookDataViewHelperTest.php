@@ -11,9 +11,9 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use TYPO3\CMS\Core\Core\ApplicationContext;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Resource\FileReference as CoreFileReference;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 final class FlipbookDataViewHelperTest extends TestCase
 {
@@ -33,13 +33,13 @@ final class FlipbookDataViewHelperTest extends TestCase
     }
 
     #[Test]
-    public function renderStaticReturnsJsonArrayOfImageUrls(): void
+    public function renderReturnsJsonArrayOfImageUrls(): void
     {
         $flipbook = new Flipbook();
         $flipbook->addPage($this->createPageWithImageUrl('fileadmin/flipbook/page_001.webp', 1));
         $flipbook->addPage($this->createPageWithImageUrl('fileadmin/flipbook/page_002.webp', 2));
 
-        $result = $this->invokeRenderStatic($flipbook);
+        $result = $this->invokeRender($flipbook);
         $decoded = json_decode(html_entity_decode($result, ENT_QUOTES, 'UTF-8'), true);
 
         self::assertIsArray($decoded);
@@ -49,11 +49,11 @@ final class FlipbookDataViewHelperTest extends TestCase
     }
 
     #[Test]
-    public function renderStaticReturnsEmptyJsonArrayForFlipbookWithoutPages(): void
+    public function renderReturnsEmptyJsonArrayForFlipbookWithoutPages(): void
     {
         $flipbook = new Flipbook();
 
-        $result = $this->invokeRenderStatic($flipbook);
+        $result = $this->invokeRender($flipbook);
         $decoded = json_decode(html_entity_decode($result, ENT_QUOTES, 'UTF-8'), true);
 
         self::assertIsArray($decoded);
@@ -61,7 +61,7 @@ final class FlipbookDataViewHelperTest extends TestCase
     }
 
     #[Test]
-    public function renderStaticSkipsPagesWithoutImage(): void
+    public function renderSkipsPagesWithoutImage(): void
     {
         $flipbook = new Flipbook();
 
@@ -72,7 +72,7 @@ final class FlipbookDataViewHelperTest extends TestCase
         $flipbook->addPage($pageWithImage);
         $flipbook->addPage($pageWithoutImage);
 
-        $result = $this->invokeRenderStatic($flipbook);
+        $result = $this->invokeRender($flipbook);
         $decoded = json_decode(html_entity_decode($result, ENT_QUOTES, 'UTF-8'), true);
 
         self::assertIsArray($decoded);
@@ -80,12 +80,16 @@ final class FlipbookDataViewHelperTest extends TestCase
     }
 
     #[Test]
-    public function renderStaticSkipsPagesWithNullOriginalResource(): void
+    public function renderSkipsPagesWithMissingOriginalResource(): void
     {
         $flipbook = new Flipbook();
 
+        // TYPO3 v14: Fehlt die sys_file_reference-Zeile (z. B. gelöschte Datei), wirft
+        // ResourceFactory::getFileReferenceObject() eine ResourceDoesNotExistException.
         $extbaseRef = $this->createMock(FileReference::class);
-        $extbaseRef->method('getOriginalResource')->willReturn(null);
+        $extbaseRef->method('getOriginalResource')->willThrowException(
+            new ResourceDoesNotExistException('Sys file reference with uid 42 does not exist', 1317178794),
+        );
 
         $page = new Page();
         $page->setPageNumber(1);
@@ -93,7 +97,7 @@ final class FlipbookDataViewHelperTest extends TestCase
 
         $flipbook->addPage($page);
 
-        $result = $this->invokeRenderStatic($flipbook);
+        $result = $this->invokeRender($flipbook);
         $decoded = json_decode(html_entity_decode($result, ENT_QUOTES, 'UTF-8'), true);
 
         self::assertIsArray($decoded);
@@ -101,12 +105,12 @@ final class FlipbookDataViewHelperTest extends TestCase
     }
 
     #[Test]
-    public function renderStaticOutputIsHtmlspecialcharsEncoded(): void
+    public function renderOutputIsHtmlspecialcharsEncoded(): void
     {
         $flipbook = new Flipbook();
         $flipbook->addPage($this->createPageWithImageUrl('fileadmin/flipbook/page_001.webp', 1));
 
-        $result = $this->invokeRenderStatic($flipbook);
+        $result = $this->invokeRender($flipbook);
 
         // JSON enthält Anführungszeichen, die escaped sein müssen
         self::assertStringNotContainsString('"', $result);
@@ -117,16 +121,12 @@ final class FlipbookDataViewHelperTest extends TestCase
     // Helpers
     // ---------------------------------------------------------------
 
-    private function invokeRenderStatic(Flipbook $flipbook): string
+    private function invokeRender(Flipbook $flipbook): string
     {
-        $renderingContext = $this->createMock(RenderingContextInterface::class);
-        $renderChildrenClosure = static fn(): string => '';
+        $viewHelper = new FlipbookDataViewHelper();
+        $viewHelper->setArguments(['flipbook' => $flipbook]);
 
-        return FlipbookDataViewHelper::renderStatic(
-            ['flipbook' => $flipbook],
-            $renderChildrenClosure,
-            $renderingContext,
-        );
+        return $viewHelper->render();
     }
 
     private function createPageWithImageUrl(string $publicUrl, int $pageNumber): Page

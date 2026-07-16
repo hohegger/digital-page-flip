@@ -14,15 +14,17 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'searchFields' => 'title,description',
+        'security' => [
+            'ignorePageTypeRestriction' => true,
+        ],
         'iconfile' => 'EXT:digital_page_flip/Resources/Public/Icons/Extension.svg',
     ],
     'types' => [
         '1' => [
             'showitem' => '
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+                --div--;core.form.tabs:general,
                     title, description, pdf_file,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+                --div--;core.form.tabs:access,
                     hidden, starttime, endtime,
                 --div--;Pages,
                     pages, page_count, conversion_status,
@@ -50,6 +52,7 @@ return [
             'config' => [
                 'type' => 'datetime',
                 'default' => 0,
+                'searchable' => false,
             ],
         ],
         'endtime' => [
@@ -58,6 +61,7 @@ return [
             'config' => [
                 'type' => 'datetime',
                 'default' => 0,
+                'searchable' => false,
                 'range' => [
                     'upper' => mktime(0, 0, 0, 1, 1, 2038),
                 ],
@@ -128,6 +132,7 @@ return [
                 'type' => 'input',
                 'size' => 10,
                 'readOnly' => true,
+                'searchable' => false,
             ],
         ],
         'conversion_status' => [

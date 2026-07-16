@@ -5,7 +5,7 @@ TYPO3-Extension zum Konvertieren von PDF-Handzetteln in blätterbare Online-Kata
 Vendor: Kit | Extension Key: digital_page_flip | Namespace: \Kit\DigitalPageFlip
 
 ## Tech-Stack
-- TYPO3 v12.4 LTS (v14-ready)
+- TYPO3 v14.3 (2.x-Strang, v14-only; 1.x-Linie = TYPO3 v12/v13)
 - PHP 8.2 (strict_types, readonly, final)
 - Extbase + Fluid (MVC)
 - page-flip (vanilla JS Flipbook-Library, npm)
@@ -13,11 +13,12 @@ Vendor: Kit | Extension Key: digital_page_flip | Namespace: \Kit\DigitalPageFlip
 - Ghostscript 10.0 + ImageMagick 6.9 (PDF→WebP/PNG Konvertierung)
 
 ## Build & Test
-- PHP-CS-Fixer: vendor/bin/php-cs-fixer fix --dry-run --diff
-- PHPStan: vendor/bin/phpstan analyse
-- Rector: vendor/bin/rector process --dry-run
-- PHPUnit: vendor/bin/phpunit --testsuite Unit
-- Vor jedem Commit: composer ci:php:cs:fix && composer ci:php:stan && composer ci:php:unit
+- Alles läuft in ddev (lokal ist kein PHP im PATH); Composer bin-dir ist .Build/bin
+- PHP-CS-Fixer: ddev exec .Build/bin/php-cs-fixer fix --dry-run --diff
+- PHPStan: ddev exec .Build/bin/phpstan analyse
+- Rector: ddev exec .Build/bin/rector process --dry-run
+- PHPUnit: ddev exec .Build/bin/phpunit --testsuite Unit
+- Vor jedem Commit: ddev exec composer ci:php:cs:fix && ddev exec composer ci:php:stan && ddev exec composer ci:php:unit
 
 ## Architektur-Regeln
 - PSR-14 Events statt Legacy-Hooks

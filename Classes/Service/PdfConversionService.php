@@ -16,7 +16,7 @@ use SplFileInfo;
 use Throwable;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Resource\DuplicationBehavior;
+use TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -24,7 +24,6 @@ use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 final readonly class PdfConversionService
 {
@@ -67,7 +66,8 @@ final readonly class PdfConversionService
             // Clean up existing pages before re-conversion
             if ($flipbook->getUid() !== null) {
                 $this->cleanupService->cleanupForReconversion($flipbook->getUid());
-                $flipbook->setPages(new ObjectStorage());
+                $pages = $flipbook->getPages();
+                $pages->removeAll(clone $pages);
                 $flipbook->setPageCount(0);
                 $this->flipbookRepository->update($flipbook);
                 $this->persistenceManager->persistAll();

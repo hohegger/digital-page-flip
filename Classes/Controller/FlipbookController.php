@@ -24,7 +24,7 @@ final class FlipbookController extends ActionController
 
     public function showAction(): ResponseInterface
     {
-        $contentData = $this->request->getAttribute('currentContentObject')?->data ?? [];
+        $contentData = $this->request->getAttribute('currentContentObject')->data ?? [];
         $flipbookUid = (int) ($contentData['tx_digitalpageflip_flipbook'] ?? 0);
         $flipbook = $this->flipbookRepository->findByUid($flipbookUid);
 

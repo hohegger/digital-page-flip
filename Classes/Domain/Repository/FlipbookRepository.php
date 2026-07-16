@@ -21,7 +21,7 @@ final class FlipbookRepository extends Repository
     }
 
     /**
-     * @return QueryResultInterface<Flipbook>
+     * @return QueryResultInterface<int, Flipbook>
      */
     public function findPending(): QueryResultInterface
     {

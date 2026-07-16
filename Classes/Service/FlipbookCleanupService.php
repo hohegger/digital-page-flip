@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kit\DigitalPageFlip\Service;
 
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Throwable;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -238,6 +239,9 @@ final readonly class FlipbookCleanupService
                 foreach ($orphanedFiles as $fileRecord) {
                     try {
                         $file = $storage->getFile((string) $fileRecord['identifier']);
+                        if ($file === null) {
+                            throw new RuntimeException('File could not be resolved from storage.', 1784160000);
+                        }
                         $file->delete();
                     } catch (Throwable $e) {
                         $this->logger->warning('Could not delete orphaned file.', [

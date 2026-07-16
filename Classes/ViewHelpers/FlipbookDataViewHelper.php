@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Kit\DigitalPageFlip\ViewHelpers;
 
-use Closure;
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Domain\Model\Page;
+use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Utility\PathUtility;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 final class FlipbookDataViewHelper extends AbstractViewHelper
@@ -20,26 +19,30 @@ final class FlipbookDataViewHelper extends AbstractViewHelper
         $this->registerArgument('flipbook', Flipbook::class, 'The flipbook to render data for', true);
     }
 
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ): string {
+    public function render(): string
+    {
         /** @var Flipbook $flipbook */
-        $flipbook = $arguments['flipbook'];
+        $flipbook = $this->arguments['flipbook'];
         $pages = [];
 
         /** @var Page $page */
         foreach ($flipbook->getPages() as $page) {
             $image = $page->getImage();
-            if ($image !== null) {
+            if ($image === null) {
+                continue;
+            }
+
+            try {
                 $originalResource = $image->getOriginalResource();
-                if ($originalResource !== null) {
-                    $publicUrl = $originalResource->getPublicUrl();
-                    if ($publicUrl !== null) {
-                        $pages[] = PathUtility::getAbsoluteWebPath($publicUrl);
-                    }
-                }
+            } catch (ResourceDoesNotExistException) {
+                // Fehlende sys_file_reference (z. B. gelöschte Datei): Seite überspringen
+                // statt das Frontend-Rendering abbrechen zu lassen.
+                continue;
+            }
+
+            $publicUrl = $originalResource->getPublicUrl();
+            if ($publicUrl !== null) {
+                $pages[] = PathUtility::getAbsoluteWebPath($publicUrl);
             }
         }
 

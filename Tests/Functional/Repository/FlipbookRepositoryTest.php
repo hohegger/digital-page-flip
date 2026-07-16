@@ -10,6 +10,6 @@ final class FlipbookRepositoryTest extends TestCase
 {
     public function testClassCanBeInstantiated(): void
     {
-        $this->markTestIncomplete('Functional tests require TYPO3 testing framework setup.');
+        $this->markTestIncomplete('Functional test suite intentionally not set up for the 2.x (v14) line; covered by unit tests and manual smoke test.');
     }
 }

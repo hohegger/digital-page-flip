@@ -11,25 +11,26 @@
     ],
     "require": {
         "php": "^8.2",
-        "typo3/cms-core": "^12.4 || ^13.4",
-        "typo3/cms-extbase": "^12.4 || ^13.4",
-        "typo3/cms-fluid": "^12.4 || ^13.4"
+        "typo3/cms-core": "^14.3",
+        "typo3/cms-extbase": "^14.3",
+        "typo3/cms-fluid": "^14.3"
     },
     "require-dev": {
-        "typo3/cms-backend": "^12.4",
-        "typo3/cms-frontend": "^12.4",
-        "typo3/cms-install": "^12.4",
-        "typo3/cms-filelist": "^12.4",
-        "typo3/cms-tstemplate": "^12.4",
-        "typo3/cms-lowlevel": "^12.4",
-        "typo3/cms-info": "^12.4",
+        "typo3/cms-backend": "^14.3",
+        "typo3/cms-frontend": "^14.3",
+        "typo3/cms-install": "^14.3",
+        "typo3/cms-filelist": "^14.3",
+        "typo3/cms-tstemplate": "^14.3",
+        "typo3/cms-lowlevel": "^14.3",
+        "typo3/cms-info": "^14.3",
         "typo3/coding-standards": "^0.8",
-        "phpstan/phpstan": "^1.10",
-        "saschaegerer/phpstan-typo3": "^1.9",
-        "ssch/typo3-rector": "^1.0",
-        "phpunit/phpunit": "^10.5",
-        "typo3/testing-framework": "^8.0",
-        "dg/bypass-finals": "^1.8"
+        "phpstan/phpstan": "^2.1",
+        "saschaegerer/phpstan-typo3": "^3.0",
+        "ssch/typo3-rector": "^3.0",
+        "phpunit/phpunit": "^11.5",
+        "typo3/testing-framework": "^9.3",
+        "dg/bypass-finals": "^1.8",
+        "typo3/cms-fluid-styled-content": "^14.3"
     },
     "autoload": {
         "psr-4": {
