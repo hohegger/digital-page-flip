@@ -1,14 +1,12 @@
 page.meta.viewport = width=device-width, initial-scale=1
 
-plugin.tx_digitalpageflip_flipbook = USER
-plugin.tx_digitalpageflip_flipbook {
-  userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
-  extensionName = DigitalPageFlip
-  pluginName = Flipbook
-  vendorName = Kit
-}
+# Das Content-Element-Rendering (tt_content.digitalpageflip_flipbook) wird von
+# ExtensionUtility::configurePlugin() automatisch registriert (EXTBASEPLUGIN via
+# lib.contentElement) — hier keine eigene USER-/tt_content-Definition anlegen.
 
-tt_content.digitalpageflip_flipbook =< plugin.tx_digitalpageflip_flipbook
+# Keine Überschrift ausgeben (Verhalten der 1.x-Linie): leeres Header/All-Partial
+# überlagert das fluid_styled_content-Partial nur für dieses CType.
+tt_content.digitalpageflip_flipbook.partialRootPaths.100 = EXT:digital_page_flip/Resources/Private/Partials/ContentElement/
 
 plugin.tx_digitalpageflip {
   view {

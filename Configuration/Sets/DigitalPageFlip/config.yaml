@@ -1,2 +1,4 @@
 name: kit/digital-page-flip
 label: Digital Page Flip
+dependencies:
+  - typo3/fluid-styled-content
