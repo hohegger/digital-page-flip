@@ -5,8 +5,12 @@ Configuration
 =============
 
 The extension works out of the box with sensible defaults. All settings
-can be adjusted via **TypoScript constants** (editable in the TYPO3
-Constant Editor).
+are defined as **site settings** (:file:`settings.definitions.yaml` of the
+site set) and can be edited in the backend via
+:guilabel:`Site Management > Settings` for every site that includes the
+``kit/digital-page-flip`` set. Alternatively they can be overridden in the
+site's own :file:`settings.yaml` or via TypoScript constants
+(``plugin.tx_digitalpageflip.*``).
 
 Flipbook settings
 =================
@@ -15,7 +19,7 @@ Flipbook settings
     :header-rows: 1
     :widths: 30 15 55
 
-    * - Constant
+    * - Setting
       - Default
       - Description
     * - ``flipbook.width``
@@ -41,20 +45,21 @@ Sidebar links
     :header-rows: 1
     :widths: 30 15 55
 
-    * - Constant
+    * - Setting
       - Default
       - Description
     * - ``sidebar.privacyPageUid``
-      -
+      - ``0``
       - Page UID for the privacy policy link.
     * - ``sidebar.imprintPageUid``
-      -
+      - ``0``
       - Page UID for the imprint link.
     * - ``sidebar.homePageUid``
-      -
+      - ``0``
       - Page UID for the home page link.
 
-Sidebar links are only displayed when the respective page UID is set.
+Sidebar links are only displayed when the respective page UID is set
+(``0`` hides the link).
 
 Viewport meta tag
 =================

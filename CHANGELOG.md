@@ -27,6 +27,12 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - `PdfConversionService` uses the v14 `Enum\DuplicationBehavior` (class removed in v14).
 - `FlipbookDataViewHelper` now skips pages whose file reference no longer exists
   (catches `ResourceDoesNotExistException`) instead of failing the page render.
+- All extension settings are now defined in the site set's
+  `settings.definitions.yaml` and editable in the backend via
+  *Site Management > Settings* (replaces the former Constant Editor workflow);
+  `constants.typoscript` was removed from the set.
+- `starttime`/`endtime` are marked `searchable => false` to keep backend search
+  behavior identical to the former `ctrl.searchFields` whitelist.
 - Rector config raised to the TYPO3 v14 level set.
 
 ### Removed

@@ -1,0 +1,97 @@
+categories:
+  digitalPageFlip:
+    label: 'Digital Page Flip'
+  digitalPageFlip.conversion:
+    label: 'PDF Conversion'
+    parent: digitalPageFlip
+  digitalPageFlip.viewer:
+    label: 'Flipbook Viewer'
+    parent: digitalPageFlip
+  digitalPageFlip.sidebar:
+    label: 'Sidebar'
+    parent: digitalPageFlip
+
+settings:
+  plugin.tx_digitalpageflip.persistence.storagePid:
+    label: 'Storage folder (PID)'
+    description: 'UID of the page/folder where flipbook records are stored.'
+    type: int
+    default: 0
+    category: digitalPageFlip
+
+  plugin.tx_digitalpageflip.settings.ghostscriptPath:
+    label: 'Ghostscript binary'
+    description: 'Absolute path to the Ghostscript binary on the server.'
+    type: string
+    default: /usr/bin/gs
+    category: digitalPageFlip.conversion
+
+  plugin.tx_digitalpageflip.settings.imageResolution:
+    label: 'Image resolution (DPI)'
+    description: 'Resolution used when converting PDF pages to images.'
+    type: int
+    default: 300
+    category: digitalPageFlip.conversion
+
+  plugin.tx_digitalpageflip.settings.webpQuality:
+    label: 'WebP quality'
+    description: 'WebP compression quality (0-100).'
+    type: int
+    default: 90
+    category: digitalPageFlip.conversion
+
+  plugin.tx_digitalpageflip.settings.maxFileSize:
+    label: 'Maximum PDF file size (MB)'
+    description: 'Uploads larger than this size are rejected.'
+    type: int
+    default: 50
+    category: digitalPageFlip.conversion
+
+  plugin.tx_digitalpageflip.settings.flipbook.width:
+    label: 'Page width (px)'
+    description: 'Width of a single page in portrait orientation.'
+    type: int
+    default: 550
+    category: digitalPageFlip.viewer
+
+  plugin.tx_digitalpageflip.settings.flipbook.height:
+    label: 'Page height (px)'
+    description: 'Height of a single page in portrait orientation.'
+    type: int
+    default: 880
+    category: digitalPageFlip.viewer
+
+  plugin.tx_digitalpageflip.settings.flipbook.showCover:
+    label: 'Show cover page'
+    description: 'Render first/last page as a single cover page (1 = yes, 0 = no).'
+    type: int
+    default: 1
+    category: digitalPageFlip.viewer
+
+  plugin.tx_digitalpageflip.settings.flipbook.swipeDistance:
+    label: 'Swipe distance'
+    description: 'Swipe sensitivity for touch devices (lower = more sensitive).'
+    type: int
+    default: 30
+    category: digitalPageFlip.viewer
+
+  plugin.tx_digitalpageflip.settings.sidebar.privacyPageUid:
+    label: 'Privacy page (UID)'
+    description: 'Page UID of the privacy policy page. 0 hides the link.'
+    type: int
+    default: 0
+    category: digitalPageFlip.sidebar
+
+  plugin.tx_digitalpageflip.settings.sidebar.imprintPageUid:
+    label: 'Imprint page (UID)'
+    description: 'Page UID of the imprint page. 0 hides the link.'
+    type: int
+    default: 0
+    category: digitalPageFlip.sidebar
+
+  plugin.tx_digitalpageflip.settings.sidebar.homePageUid:
+    label: 'Home page (UID)'
+    description: 'Page UID of the home page link. 0 hides the link.'
+    type: int
+    default: 0
+    category: digitalPageFlip.sidebar
