@@ -8,6 +8,8 @@ Requirements
 ============
 
 - TYPO3 14.3
+- typo3/cms-fluid-styled-content (content element rendering; loaded
+  automatically as a site set dependency)
 - PHP >= 8.2
 - Ghostscript >= 10.0
 - ImageMagick >= 6.9
@@ -60,6 +62,27 @@ development files):
 
     vendor/bin/typo3 extension:setup
     vendor/bin/typo3 cache:flush
+
+**6. Activate the site set (required):**
+
+Since version 2.0.0 the extension provides its TypoScript (template paths,
+plugin settings, storage PID) as a site set instead of a static TypoScript
+template. Add the set to every site that uses the flipbook — either in the
+:guilabel:`Sites` module under *Sets for this Site*, or directly in
+:file:`config/sites/<identifier>/config.yaml`:
+
+.. code-block:: yaml
+
+    dependencies:
+      - kit/digital-page-flip
+
+.. attention::
+
+    **Upgrading from 1.x:** The static TypoScript template
+    ("Digital Page Flip") no longer exists. Remove the stale include from
+    your sys_template record and declare the site set dependency as shown
+    above instead. Without it, the flipbook content element renders without
+    templates and settings.
 
 System dependencies
 ===================

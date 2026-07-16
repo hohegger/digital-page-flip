@@ -32,6 +32,21 @@ vendor/bin/typo3 extension:setup
 vendor/bin/typo3 cache:flush
 ```
 
+### Activate the site set (required)
+
+Since 2.0.0 the extension ships its TypoScript as a **site set** instead of a
+static TypoScript template. Add it to your site configuration — either in the
+**Sites** module (*Sets for this Site*) or in
+`config/sites/<identifier>/config.yaml`:
+
+```yaml
+dependencies:
+  - kit/digital-page-flip
+```
+
+Without this step the flipbook content element renders without templates and
+settings.
+
 > **Private repository:** A GitHub token with `repo` scope is required.
 > See the [Installation documentation](Documentation/Installation.rst) for details.
 
@@ -46,7 +61,8 @@ See the [full documentation](Documentation/Index.rst) for detailed instructions.
 
 ## Requirements
 
-- TYPO3 14.3
+- TYPO3 14.3 (with `typo3/cms-fluid-styled-content` — the site set loads it
+  automatically as a dependency)
 - PHP >= 8.2
 - Ghostscript >= 10.0
 - ImageMagick >= 6.9
