@@ -255,8 +255,9 @@ final class FlipbookCleanupServiceTest extends TestCase
             ->expects(self::once())
             ->method('warning')
             ->with(
-                'Could not delete orphaned file: file could not be resolved from storage.',
-                self::callback(static fn(array $context): bool => $context['identifier'] === $orphanedFileRow[0]['identifier']),
+                'Could not delete orphaned file.',
+                self::callback(static fn(array $context): bool => $context['identifier'] === $orphanedFileRow[0]['identifier']
+                    && $context['error'] === 'File could not be resolved from storage.'),
             );
 
         // Must not throw despite getFile() returning null
