@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kit\DigitalPageFlip\Tests\Unit\Controller;
 
+use Kit\DigitalPageFlip\Controller\FlipbookController;
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -40,5 +41,29 @@ final class FlipbookControllerTest extends TestCase
                 sprintf('Status %d should %sbe displayed.', $status, $shouldDisplay ? '' : 'not '),
             );
         }
+    }
+
+    #[Test]
+    public function resolveFlipbookUidUsesSelectionInManualMode(): void
+    {
+        $data = ['tx_digitalpageflip_mode' => 0, 'tx_digitalpageflip_flipbook' => 7];
+
+        self::assertSame(7, FlipbookController::resolveFlipbookUid($data, 99));
+    }
+
+    #[Test]
+    public function resolveFlipbookUidUsesCurrentInAutoMode(): void
+    {
+        $data = ['tx_digitalpageflip_mode' => 1, 'tx_digitalpageflip_flipbook' => 7];
+
+        self::assertSame(99, FlipbookController::resolveFlipbookUid($data, 99));
+    }
+
+    #[Test]
+    public function resolveFlipbookUidReturnsZeroInAutoModeWithoutCurrent(): void
+    {
+        $data = ['tx_digitalpageflip_mode' => 1, 'tx_digitalpageflip_flipbook' => 7];
+
+        self::assertSame(0, FlipbookController::resolveFlipbookUid($data, null));
     }
 }

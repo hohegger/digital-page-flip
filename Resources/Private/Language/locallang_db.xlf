@@ -84,6 +84,15 @@
             <trans-unit id="tt_content.tx_digitalpageflip_flipbook" resname="tt_content.tx_digitalpageflip_flipbook">
                 <source>Flipbook</source>
             </trans-unit>
+            <trans-unit id="tt_content.tx_digitalpageflip_mode" resname="tt_content.tx_digitalpageflip_mode">
+                <source>Anzeige</source>
+            </trans-unit>
+            <trans-unit id="tt_content.tx_digitalpageflip_mode.0" resname="tt_content.tx_digitalpageflip_mode.0">
+                <source>Ausgewählter Handzettel</source>
+            </trans-unit>
+            <trans-unit id="tt_content.tx_digitalpageflip_mode.1" resname="tt_content.tx_digitalpageflip_mode.1">
+                <source>Aktuellen Handzettel automatisch anzeigen</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

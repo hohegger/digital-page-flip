@@ -1,4 +1,5 @@
 CREATE TABLE tt_content (
+	tx_digitalpageflip_mode int(11) unsigned DEFAULT '0' NOT NULL,
 	tx_digitalpageflip_flipbook int(11) unsigned DEFAULT '0' NOT NULL
 );
 
