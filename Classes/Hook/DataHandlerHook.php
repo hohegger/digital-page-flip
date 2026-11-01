@@ -27,22 +27,24 @@ final class DataHandlerHook
     private const DEFAULT_LEAD_DAYS = 2;
 
     /**
-     * Derives starttime/endtime (and a missing valid_until) from the validity fields before saving.
+     * Derives starttime/endtime (and a missing valid_until) just before the DB write.
+     * Runs after DataHandler's access checks, so exclude fields cannot strip the derived values.
      *
      * @param array<string, mixed> $fieldArray
      */
-    public function processDatamap_preProcessFieldArray(
-        array &$fieldArray,
+    public function processDatamap_postProcessFieldArray(
+        string $status,
         string $table,
         string|int $id,
+        array &$fieldArray,
         DataHandler $dataHandler,
     ): void {
-        if ($table !== self::TABLE) {
+        if ($table !== self::TABLE || $fieldArray === []) {
             return;
         }
 
         $current = [];
-        if (!str_starts_with((string) $id, 'NEW')) {
+        if ($status !== 'new') {
             $current = BackendUtility::getRecord(self::TABLE, (int) $id) ?? [];
         }
 
@@ -66,7 +68,8 @@ final class DataHandlerHook
             return [];
         }
 
-        $leadDays = (int) ($incoming['lead_days'] ?? $current['lead_days'] ?? self::DEFAULT_LEAD_DAYS);
+        $rawLeadDays = $incoming['lead_days'] ?? $current['lead_days'] ?? '';
+        $leadDays = $rawLeadDays === '' ? self::DEFAULT_LEAD_DAYS : (int) $rawLeadDays;
 
         $result = [
             'starttime' => ValidityCalculator::onlineStart($validFrom, $leadDays, $timezone),

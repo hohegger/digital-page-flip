@@ -191,4 +191,16 @@ final class DataHandlerHookTest extends TestCase
         self::assertSame(self::ts('2026-10-26 00:00'), $result['starttime']);
         self::assertArrayNotHasKey('valid_until', $result);
     }
+
+    #[Test]
+    public function deriveScheduleTreatsEmptyLeadDaysAsDefault(): void
+    {
+        $result = DataHandlerHook::deriveSchedule(
+            ['valid_from' => self::ts('2026-10-28 00:00'), 'lead_days' => ''],
+            [],
+            new DateTimeZone('Europe/Berlin'),
+        );
+
+        self::assertSame(self::ts('2026-10-26 00:00'), $result['starttime']);
+    }
 }
