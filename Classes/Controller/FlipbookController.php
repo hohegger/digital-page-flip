@@ -39,6 +39,7 @@ final class FlipbookController extends ActionController
         $flipbook = $this->flipbookRepository->findByUid($flipbookUid);
 
         if (!$flipbook instanceof Flipbook) {
+            $this->view->assign('noFlipbook', true);
             return $this->htmlResponse();
         }
 

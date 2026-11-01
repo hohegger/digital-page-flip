@@ -9,7 +9,7 @@
         <f:then>
             <p>Der Katalog wird derzeit vorbereitet. Bitte versuchen Sie es später erneut.</p>
         </f:then>
-        <f:else>
+        <f:else if="{flipbook}">
             <section class="flipbook-viewer" aria-label="{flipbook.title}">
                 <div class="flipbook-viewer__main">
                     <f:render partial="Flipbook/Sidebar" arguments="{flipbook: flipbook, settings: settings}" />
@@ -53,6 +53,20 @@
                     </div>
                 </div>
             </section>
+        </f:else>
+        <f:else>
+            <f:comment><!-- No flipbook (none selected or none current): neutral notice instead of an error. --></f:comment>
+            <p>Derzeit ist kein Katalog verfügbar.</p>
+            <f:if condition="{settings.sidebar.imprintPageUid} || {settings.sidebar.privacyPageUid}">
+                <nav aria-label="Rechtliche Hinweise">
+                    <f:if condition="{settings.sidebar.imprintPageUid}">
+                        <a href="{f:uri.page(pageUid: settings.sidebar.imprintPageUid)}">Impressum</a>
+                    </f:if>
+                    <f:if condition="{settings.sidebar.privacyPageUid}">
+                        <a href="{f:uri.page(pageUid: settings.sidebar.privacyPageUid)}">Datenschutz</a>
+                    </f:if>
+                </nav>
+            </f:if>
         </f:else>
     </f:if>
 </f:section>

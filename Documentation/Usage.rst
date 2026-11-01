@@ -41,7 +41,9 @@ Placing the content element
 5. **Save** — the flipbook is displayed in the frontend.
 
 Alternatively set **Anzeige** to *Aktuellen Handzettel automatisch anzeigen*
-(see below). Without a selected flipbook, nothing is rendered.
+(see below). Without a flipbook to show, the element renders the short notice
+"Derzeit ist kein Katalog verfügbar." plus links to the imprint and privacy
+pages (only those configured in the site settings ``sidebar.*``).
 
 Catalog page without the website layout
 =======================================
@@ -105,7 +107,7 @@ In the content element, the field **Anzeige** offers two modes:
 * *Ausgewählter Handzettel* - shows the flipbook chosen in the **Flipbook** field.
 * *Aktuellen Handzettel automatisch anzeigen* - always shows the current flipbook
   (see above); the **Flipbook** field is hidden. If there is no current flipbook,
-  nothing is rendered.
+  the neutral notice described above is shown instead of the viewer.
 
 Using the current flipbook in your own templates
 ================================================

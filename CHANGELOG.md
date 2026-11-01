@@ -24,6 +24,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ### Fixed
 
 - `digitalpageflip:convert` now also converts hidden and scheduled flipbooks (future online start), so a prepared catalog is ready when it goes online; deleted records stay excluded.
+- The content element no longer fails (HTTP 500) when there is no flipbook to show (none selected, or no current flipbook in auto mode); it renders a short notice with the configured imprint/privacy links.
 - Documentation no longer claims that an overview of all catalogs is shown when no flipbook is selected.
 
 ## [2.0.0] - 2026-07-16

@@ -67,8 +67,9 @@ days), `lead_days` (default `2`, days online before `valid_from`) and a
 The **current** flipbook is the one with the latest online start not in the
 future among visible, fully converted records with `valid_from` set in the
 configured `storagePid` (0 = all). In the content element, set **Anzeige** to
-*Aktuellen Handzettel automatisch anzeigen* to always show it. Nothing is
-rendered if there is none.
+*Aktuellen Handzettel automatisch anzeigen* to always show it. If there is
+none, a short notice ("Derzeit ist kein Katalog verfügbar.") with the configured
+imprint/privacy links is shown instead of the viewer.
 
 Page caches are tagged and expire at the next online start, so the switch needs
 no manual cache flush.
