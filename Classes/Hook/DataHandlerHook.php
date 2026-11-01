@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Kit\DigitalPageFlip\Hook;
 
+use DateTimeImmutable;
+use DateTimeZone;
+use Exception;
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
+use Kit\DigitalPageFlip\Domain\Validity\ValidityCalculator;
 use Kit\DigitalPageFlip\Service\FlipbookCleanupService;
 use Throwable;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -19,6 +24,81 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 final class DataHandlerHook
 {
     private const TABLE = 'tx_digitalpageflip_domain_model_flipbook';
+    private const DEFAULT_LEAD_DAYS = 2;
+
+    /**
+     * Derives starttime/endtime (and a missing valid_until) from the validity fields before saving.
+     *
+     * @param array<string, mixed> $fieldArray
+     */
+    public function processDatamap_preProcessFieldArray(
+        array &$fieldArray,
+        string $table,
+        string|int $id,
+        DataHandler $dataHandler,
+    ): void {
+        if ($table !== self::TABLE) {
+            return;
+        }
+
+        $current = [];
+        if (!str_starts_with((string) $id, 'NEW')) {
+            $current = BackendUtility::getRecord(self::TABLE, (int) $id) ?? [];
+        }
+
+        $fieldArray = array_merge(
+            $fieldArray,
+            self::deriveSchedule($fieldArray, $current, new DateTimeZone(date_default_timezone_get())),
+        );
+    }
+
+    /**
+     * Returns the additional fields to write, or an empty array if the record is not validity-controlled.
+     *
+     * @param array<string, mixed> $incoming
+     * @param array<string, mixed> $current
+     * @return array<string, int>
+     */
+    public static function deriveSchedule(array $incoming, array $current, DateTimeZone $timezone): array
+    {
+        $validFrom = self::normalizeTimestamp($incoming['valid_from'] ?? $current['valid_from'] ?? 0);
+        if ($validFrom <= 0) {
+            return [];
+        }
+
+        $leadDays = (int) ($incoming['lead_days'] ?? $current['lead_days'] ?? self::DEFAULT_LEAD_DAYS);
+
+        $result = [
+            'starttime' => ValidityCalculator::onlineStart($validFrom, $leadDays, $timezone),
+            'endtime' => 0,
+        ];
+
+        $validUntil = self::normalizeTimestamp($incoming['valid_until'] ?? $current['valid_until'] ?? 0);
+        if ($validUntil <= 0) {
+            $result['valid_until'] = ValidityCalculator::defaultValidUntil($validFrom, $timezone);
+        }
+
+        return $result;
+    }
+
+    private static function normalizeTimestamp(mixed $value): int
+    {
+        if (is_int($value)) {
+            return $value;
+        }
+        if (is_string($value) && $value !== '') {
+            if (ctype_digit($value)) {
+                return (int) $value;
+            }
+            try {
+                return (new DateTimeImmutable($value))->getTimestamp();
+            } catch (Exception) {
+                return 0;
+            }
+        }
+
+        return 0;
+    }
 
     public function processDatamap_afterAllOperations(DataHandler $dataHandler): void
     {
