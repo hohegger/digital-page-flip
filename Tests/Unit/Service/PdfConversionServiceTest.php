@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use ReflectionMethod;
 use RuntimeException;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileReference as CoreFileReference;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -41,6 +42,7 @@ final class PdfConversionServiceTest extends TestCase
             $this->persistenceManagerMock,
             $this->createMock(FlipbookCleanupService::class),
             $this->loggerMock,
+            $this->createMock(CacheManager::class),
         );
     }
 

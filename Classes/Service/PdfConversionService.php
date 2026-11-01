@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kit\DigitalPageFlip\Service;
 
 use FilesystemIterator;
+use Kit\DigitalPageFlip\Domain\Current\CurrentFlipbookResolver;
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Domain\Model\Page;
 use Kit\DigitalPageFlip\Domain\Repository\FlipbookRepository;
@@ -14,6 +15,7 @@ use RecursiveIteratorIterator;
 use RuntimeException;
 use SplFileInfo;
 use Throwable;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior;
@@ -40,6 +42,7 @@ final readonly class PdfConversionService
         private PersistenceManager $persistenceManager,
         private FlipbookCleanupService $cleanupService,
         private LoggerInterface $logger,
+        private CacheManager $cacheManager,
     ) {}
     /**
      * Converts a PDF attached to the given flipbook into page images (WebP + PNG fallback).
@@ -134,6 +137,9 @@ final readonly class PdfConversionService
             $flipbook->setConversionStatus(Flipbook::STATUS_COMPLETED);
             $this->flipbookRepository->update($flipbook);
             $this->persistenceManager->persistAll();
+
+            // Only after the completed status is persisted, so re-rendered pages see it.
+            $this->cacheManager->flushCachesInGroupByTags('pages', [CurrentFlipbookResolver::CACHE_TAG]);
 
             $this->logger->info('PDF conversion completed successfully.', [
                 'flipbookUid' => $flipbook->getUid(),
