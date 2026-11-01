@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kit\DigitalPageFlip\Tests\Unit\Domain\Model;
 
+use DateTime;
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Domain\Model\Page;
 use PHPUnit\Framework\Attributes\Test;
@@ -156,5 +157,36 @@ final class FlipbookTest extends TestCase
 
         $this->subject->initializeObject();
         self::assertCount(0, $this->subject->getPages());
+    }
+
+    #[Test]
+    public function leadDaysDefaultsToTwo(): void
+    {
+        self::assertSame(2, $this->subject->getLeadDays());
+    }
+
+    #[Test]
+    public function effectiveWeekLabelPrefersManualLabel(): void
+    {
+        $this->subject->setValidFrom(new DateTime('2026-10-28'));
+        $this->subject->setValidUntil(new DateTime('2026-11-10'));
+        $this->subject->setWeekLabel('Sonderausgabe');
+
+        self::assertSame('Sonderausgabe', $this->subject->getEffectiveWeekLabel());
+    }
+
+    #[Test]
+    public function effectiveWeekLabelFallsBackToCalculated(): void
+    {
+        $this->subject->setValidFrom(new DateTime('2026-10-28'));
+        $this->subject->setValidUntil(new DateTime('2026-11-10'));
+
+        self::assertSame('44_45', $this->subject->getEffectiveWeekLabel());
+    }
+
+    #[Test]
+    public function effectiveWeekLabelIsEmptyWithoutValidFrom(): void
+    {
+        self::assertSame('', $this->subject->getEffectiveWeekLabel());
     }
 }
