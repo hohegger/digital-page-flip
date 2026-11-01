@@ -12,6 +12,15 @@ site set) and can be edited in the backend via
 site's own :file:`settings.yaml` or via TypoScript constants
 (``plugin.tx_digitalpageflip.*``).
 
+Storage folder and validity
+===========================
+
+``plugin.tx_digitalpageflip.persistence.storagePid`` limits the automatic
+"current flipbook" selection to one folder (``0`` = all pages). Per flipbook,
+the fields ``valid_from``, ``valid_until``, ``lead_days`` (default ``2``) and
+``week_label`` (generated automatically) control when it goes online; see
+:ref:`usage`.
+
 Flipbook settings
 =================
 

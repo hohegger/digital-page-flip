@@ -5,6 +5,21 @@ Alle relevanten Änderungen an dieser Extension werden in dieser Datei dokumenti
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [2.1.0] - Unreleased
+
+### Added
+
+- Flipbook validity fields `valid_from`, `valid_until`, `lead_days` (default 2) and `week_label` (generated from the ISO calendar weeks, manual value wins).
+- The online start (`starttime`) is derived on save from `valid_from` minus `lead_days`.
+- `CurrentFlipbookResolver` service selecting the current and upcoming flipbook (completed conversions only, optional `storagePid`).
+- Page cache is tagged and its lifetime capped at the next online start; saving flipbooks flushes the tag.
+- Content element mode "Anzeige": show the current flipbook automatically (`tx_digitalpageflip_mode`).
+- `currentFlipbook` Fluid ViewHelper (`upcoming`, `pageUid`) exposing the current or upcoming flipbook to other templates.
+
+### Fixed
+
+- Documentation no longer claims that an overview of all catalogs is shown when no flipbook is selected.
+
 ## [2.0.0] - 2026-07-16
 
 ### Changed
