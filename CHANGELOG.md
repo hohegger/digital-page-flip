@@ -7,6 +7,11 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [2.1.0] - Unreleased
 
+### Upgrade notes
+
+- New database columns `valid_from`, `valid_until`, `lead_days` and `week_label` in `tx_digitalpageflip_domain_model_flipbook` and `tx_digitalpageflip_mode` in `tt_content`: run the database schema update (Admin Tools > Maintenance > Analyze Database Structure, or `vendor/bin/typo3 database:updateschema`).
+- The blank page layout `DigitalPageFlipBlank` only takes effect if the site package switches the page object with the TypoScript condition `[tree.pagelayout == "pagets__DigitalPageFlipBlank"]` at the end of its setup (see `Documentation/Usage.rst`, "Catalog page without the website layout").
+
 ### Added
 
 - Flipbook validity fields `valid_from`, `valid_until`, `lead_days` (default 2) and `week_label` (generated from the ISO calendar weeks, manual value wins).

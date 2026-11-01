@@ -89,8 +89,10 @@ Each flipbook has a validity period (palette *Validity* in the record):
 
 ``week_label`` (Kalenderwoche)
     Calendar weeks as ``<ISO week of valid_from>_<ISO week of valid_until - 6 days>``,
-    two digits each (e.g. ``12_13``); a single number if the second week is not
-    greater than the first. Generated automatically; a value entered by hand wins.
+    two digits each (e.g. ``12_13``, across the year end ``53_01``); a single number
+    when ``valid_from`` and ``valid_until - 6 days`` fall in the same week or the
+    period is shorter than 7 days. Generated automatically; a value entered by
+    hand wins.
 
 The **current** flipbook is the one with the latest online start that is
 not in the future, among all records that are not hidden or deleted, have
