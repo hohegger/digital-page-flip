@@ -111,6 +111,8 @@ return [
         'valid_from' => [
             'exclude' => true,
             'label' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook.valid_from',
+            'description' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook.valid_from.description',
+            'onChange' => 'reload',
             'config' => [
                 'type' => 'datetime',
                 'format' => 'date',

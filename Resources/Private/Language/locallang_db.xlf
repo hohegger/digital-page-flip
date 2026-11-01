@@ -42,6 +42,9 @@
             <trans-unit id="tx_digitalpageflip_domain_model_flipbook.valid_from" resname="tx_digitalpageflip_domain_model_flipbook.valid_from">
                 <source>Gültig von</source>
             </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.valid_from.description" resname="tx_digitalpageflip_domain_model_flipbook.valid_from.description">
+                <source>Erforderlich für die automatische Anzeige. Ohne Datum wird der Handzettel nur über Start/Stopp gesteuert.</source>
+            </trans-unit>
             <trans-unit id="tx_digitalpageflip_domain_model_flipbook.valid_until" resname="tx_digitalpageflip_domain_model_flipbook.valid_until">
                 <source>Gültig bis</source>
             </trans-unit>
@@ -55,7 +58,7 @@
                 <source>Kalenderwochen-Bezeichnung</source>
             </trans-unit>
             <trans-unit id="tx_digitalpageflip_domain_model_flipbook.week_label.description" resname="tx_digitalpageflip_domain_model_flipbook.week_label.description">
-                <source>Leer = automatisch</source>
+                <source>Leer = automatisch. Erlaubt: Buchstaben, Ziffern, Leerzeichen und _ . / - –</source>
             </trans-unit>
             <trans-unit id="tx_digitalpageflip_domain_model_page" resname="tx_digitalpageflip_domain_model_page">
                 <source>Seite</source>
