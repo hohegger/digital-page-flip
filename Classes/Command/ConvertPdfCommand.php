@@ -43,7 +43,7 @@ final class ConvertPdfCommand extends Command
 
         if ($uid !== null) {
             $uid = (int) $uid;
-            $flipbook = $this->flipbookRepository->findByUid($uid);
+            $flipbook = $this->flipbookRepository->findByUidForConversion($uid);
             if (!$flipbook instanceof Flipbook) {
                 $io->error(sprintf('Flipbook with UID %d not found.', $uid));
                 return Command::FAILURE;

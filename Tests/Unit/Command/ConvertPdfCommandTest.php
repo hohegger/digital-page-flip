@@ -48,7 +48,7 @@ final class ConvertPdfCommandTest extends TestCase
         $flipbook = $this->createFlipbookWithUid(42, 'Testkatalog');
 
         $this->flipbookRepositoryMock
-            ->method('findByUid')
+            ->method('findByUidForConversion')
             ->with(42)
             ->willReturn($flipbook);
 
@@ -69,10 +69,30 @@ final class ConvertPdfCommandTest extends TestCase
     }
 
     #[Test]
+    public function executeWithUidUsesConversionLookupInsteadOfFrontendLookup(): void
+    {
+        $flipbook = $this->createFlipbookWithUid(7, 'Geplanter Katalog');
+
+        $this->flipbookRepositoryMock
+            ->expects(self::never())
+            ->method('findByUid');
+        $this->flipbookRepositoryMock
+            ->expects(self::once())
+            ->method('findByUidForConversion')
+            ->with(7)
+            ->willReturn($flipbook);
+
+        $tester = new CommandTester($this->command);
+        $tester->execute(['uid' => '7']);
+
+        self::assertSame(Command::SUCCESS, $tester->getStatusCode());
+    }
+
+    #[Test]
     public function executeWithUidReturnsFailureWhenFlipbookNotFound(): void
     {
         $this->flipbookRepositoryMock
-            ->method('findByUid')
+            ->method('findByUidForConversion')
             ->with(99)
             ->willReturn(null);
 
@@ -93,7 +113,7 @@ final class ConvertPdfCommandTest extends TestCase
         $flipbook = $this->createFlipbookWithUid(42, 'Fehler-Katalog');
 
         $this->flipbookRepositoryMock
-            ->method('findByUid')
+            ->method('findByUidForConversion')
             ->with(42)
             ->willReturn($flipbook);
 
