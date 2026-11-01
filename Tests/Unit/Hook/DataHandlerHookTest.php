@@ -10,6 +10,7 @@ use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Hook\DataHandlerHook;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 final class DataHandlerHookTest extends TestCase
 {
@@ -202,5 +203,26 @@ final class DataHandlerHookTest extends TestCase
         );
 
         self::assertSame(self::ts('2026-10-26 00:00'), $result['starttime']);
+    }
+
+    // ---------------------------------------------------------------
+    // createFlashMessage() — session storage
+    // ---------------------------------------------------------------
+
+    #[Test]
+    public function flashMessageIsNotStoredInSessionInCli(): void
+    {
+        $message = DataHandlerHook::createFlashMessage('Text', ContextualFeedbackSeverity::INFO, true);
+
+        self::assertFalse($message->isSessionMessage());
+    }
+
+    #[Test]
+    public function flashMessageIsStoredInSessionInBackend(): void
+    {
+        $message = DataHandlerHook::createFlashMessage('Text', ContextualFeedbackSeverity::INFO, false);
+
+        self::assertTrue($message->isSessionMessage());
+        self::assertSame('PDF-Konvertierung', $message->getTitle());
     }
 }

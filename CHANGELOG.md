@@ -28,6 +28,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - The content element no longer fails (HTTP 500) when there is no flipbook to show (none selected, or no current flipbook in auto mode); it renders a short notice with the configured imprint/privacy links.
 - A failing page cache flush after a conversion is logged as a warning and no longer turns the completed conversion into status *Error*.
 - The page cache lifetime is capped at the next online start rounded up to the full minute, matching the minute-based access time of the start time restriction.
+- DataHandler runs on the CLI (scheduler, imports) no longer crash after saving a flipbook: the conversion flash message is not stored in the (missing) backend session there.
 - Documentation no longer claims that an overview of all catalogs is shown when no flipbook is selected.
 
 ## [2.0.0] - 2026-07-16

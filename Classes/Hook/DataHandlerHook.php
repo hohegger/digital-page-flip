@@ -12,6 +12,7 @@ use Kit\DigitalPageFlip\Domain\Validity\ValidityCalculator;
 use Kit\DigitalPageFlip\Service\FlipbookCleanupService;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -222,9 +223,16 @@ final class DataHandlerHook
 
     private function addFlashMessage(string $message, ContextualFeedbackSeverity $severity): void
     {
-        $flashMessage = new FlashMessage($message, 'PDF-Konvertierung', $severity, true);
         GeneralUtility::getContainer()->get(FlashMessageService::class)
             ->getMessageQueueByIdentifier()
-            ->enqueue($flashMessage);
+            ->enqueue(self::createFlashMessage($message, $severity, Environment::isCli()));
+    }
+
+    /**
+     * CLI runs (scheduler, imports) have no backend session, so the message must not be stored there.
+     */
+    public static function createFlashMessage(string $message, ContextualFeedbackSeverity $severity, bool $isCli): FlashMessage
+    {
+        return new FlashMessage($message, 'PDF-Konvertierung', $severity, !$isCli);
     }
 }
