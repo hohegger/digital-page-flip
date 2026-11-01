@@ -43,6 +43,30 @@ Placing the content element
 Alternatively set **Anzeige** to *Aktuellen Handzettel automatisch anzeigen*
 (see below). Without a selected flipbook, nothing is rendered.
 
+Catalog page without the website layout
+=======================================
+
+The site set ships a backend layout **Flipbook (leere Seite)**
+(identifier ``DigitalPageFlipBlank``, one column ``main`` with colPos 0) and a
+matching page object ``lib.digitalPageFlip.blankPage`` (``PAGE`` with
+``PAGEVIEW``). It outputs only the HTML document (title, viewport meta tag)
+and the content of the ``main`` column - no header, footer, CSS or JavaScript
+of the website; the flipbook brings its own assets.
+
+Because the site set of the extension is loaded before the site package,
+the site package has to switch the page object itself, at the **end** of its
+TypoScript setup (after its own ``page`` definition):
+
+.. code-block:: typoscript
+
+    [tree.pagelayout == "pagets__DigitalPageFlipBlank"]
+    page >
+    page < lib.digitalPageFlip.blankPage
+    [END]
+
+Then select the backend layout *Flipbook (leere Seite)* in the page properties
+of the catalog page and place the content element in its column.
+
 Validity and automatic publishing
 =================================
 

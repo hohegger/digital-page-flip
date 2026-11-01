@@ -93,6 +93,12 @@
             <trans-unit id="tt_content.tx_digitalpageflip_mode.1" resname="tt_content.tx_digitalpageflip_mode.1">
                 <source>Aktuellen Handzettel automatisch anzeigen</source>
             </trans-unit>
+            <trans-unit id="backend_layout.blank" resname="backend_layout.blank">
+                <source>Flipbook (leere Seite)</source>
+            </trans-unit>
+            <trans-unit id="backend_layout.blank.main" resname="backend_layout.blank.main">
+                <source>Flipbook</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
