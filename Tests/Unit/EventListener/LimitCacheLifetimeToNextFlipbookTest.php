@@ -10,12 +10,21 @@ use PHPUnit\Framework\TestCase;
 
 final class LimitCacheLifetimeToNextFlipbookTest extends TestCase
 {
-    private const NOW = 1_700_000_000;
+    /** Minute-aligned like the derived online starts (00:00). */
+    private const NOW = 1_699_999_980;
 
     #[Test]
     public function cacheLifetimeIsCappedAtNextOnlineStart(): void
     {
         self::assertSame(600, LimitCacheLifetimeToNextFlipbook::cappedLifetime(86400, self::NOW + 600, self::NOW));
+    }
+
+    #[Test]
+    public function cacheLifetimeRoundsUpToFullMinute(): void
+    {
+        // Start 15:30:07 is only visible from 15:31:00 (minute-rounded access time).
+        self::assertSame(660, LimitCacheLifetimeToNextFlipbook::cappedLifetime(86400, self::NOW + 607, self::NOW));
+        self::assertSame(60, LimitCacheLifetimeToNextFlipbook::cappedLifetime(86400, self::NOW + 1, self::NOW));
     }
 
     #[Test]

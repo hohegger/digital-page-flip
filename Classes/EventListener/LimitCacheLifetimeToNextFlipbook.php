@@ -22,17 +22,25 @@ final readonly class LimitCacheLifetimeToNextFlipbook
     public function __invoke(ModifyCacheLifetimeForPageEvent $event): void
     {
         $now = (int) $event->getContext()->getPropertyFromAspect('date', 'timestamp');
+        // Records become visible by the minute-rounded access time (SIM_ACCESS_TIME), not by the second.
+        $accessTime = $now - $now % 60;
         $event->setCacheLifetime(
-            self::cappedLifetime($event->getCacheLifetime(), $this->resolver->nextOnlineStart(0, $now), $now),
+            self::cappedLifetime($event->getCacheLifetime(), $this->resolver->nextOnlineStart(0, $accessTime), $now),
         );
     }
 
+    /**
+     * Caps the lifetime at the next online start, rounded up to the full minute
+     * (the first moment the minute-based start time restriction shows the record).
+     */
     public static function cappedLifetime(int $current, ?int $nextOnlineStart, int $now): int
     {
         if ($nextOnlineStart === null) {
             return $current;
         }
 
-        return max(1, min($current, $nextOnlineStart - $now));
+        $visibleFrom = intdiv($nextOnlineStart + 59, 60) * 60;
+
+        return max(1, min($current, $visibleFrom - $now));
     }
 }
