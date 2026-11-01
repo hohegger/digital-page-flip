@@ -328,6 +328,38 @@ final class PdfConversionServiceTest extends TestCase
     }
 
     // ---------------------------------------------------------------
+    // flushPageCache() — via Reflection
+    // ---------------------------------------------------------------
+
+    #[Test]
+    public function cacheFlushFailureIsLoggedAndDoesNotThrow(): void
+    {
+        $cacheManager = $this->createMock(CacheManager::class);
+        $cacheManager->method('flushCachesInGroupByTags')
+            ->willThrowException(new RuntimeException('cache backend down'));
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::once())->method('warning');
+        $logger->expects(self::never())->method('error');
+
+        $subject = new PdfConversionService(
+            $this->createMock(ResourceFactory::class),
+            $this->createMock(StorageRepository::class),
+            $this->flipbookRepositoryMock,
+            $this->persistenceManagerMock,
+            $this->createMock(FlipbookCleanupService::class),
+            $logger,
+            $cacheManager,
+        );
+        $flipbook = new Flipbook();
+        $flipbook->setConversionStatus(Flipbook::STATUS_COMPLETED);
+
+        $method = new ReflectionMethod(PdfConversionService::class, 'flushPageCache');
+        $method->invoke($subject, $flipbook);
+
+        self::assertSame(Flipbook::STATUS_COMPLETED, $flipbook->getConversionStatus());
+    }
+
+    // ---------------------------------------------------------------
     // Helpers
     // ---------------------------------------------------------------
 

@@ -139,7 +139,7 @@ final readonly class PdfConversionService
             $this->persistenceManager->persistAll();
 
             // Only after the completed status is persisted, so re-rendered pages see it.
-            $this->cacheManager->flushCachesInGroupByTags('pages', [CurrentFlipbookResolver::CACHE_TAG]);
+            $this->flushPageCache($flipbook);
 
             $this->logger->info('PDF conversion completed successfully.', [
                 'flipbookUid' => $flipbook->getUid(),
@@ -161,6 +161,21 @@ final readonly class PdfConversionService
             if ($tempDir !== '' && is_dir($tempDir)) {
                 $this->cleanupTempDirectory($tempDir);
             }
+        }
+    }
+    /**
+     * Flushes pages showing the current flipbook. A failure is only logged:
+     * the conversion is already completed and must not be flagged as failed.
+     */
+    private function flushPageCache(Flipbook $flipbook): void
+    {
+        try {
+            $this->cacheManager->flushCachesInGroupByTags('pages', [CurrentFlipbookResolver::CACHE_TAG]);
+        } catch (Throwable $e) {
+            $this->logger->warning('Page cache flush after PDF conversion failed.', [
+                'flipbookUid' => $flipbook->getUid(),
+                'error' => $e->getMessage(),
+            ]);
         }
     }
     /**
