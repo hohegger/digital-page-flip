@@ -15,6 +15,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - Page cache is tagged and its lifetime capped at the next online start; saving flipbooks flushes the tag.
 - Content element mode "Anzeige": show the current flipbook automatically (`tx_digitalpageflip_mode`).
 - `currentFlipbook` Fluid ViewHelper (`upcoming`, `pageUid`) exposing the current or upcoming flipbook to other templates.
+- The record list shows the validity period next to the title (`label_alt` `valid_from,valid_until`).
 - Backend layout `DigitalPageFlipBlank` (set page TSconfig) and page object `lib.digitalPageFlip.blankPage` (`PAGEVIEW`) rendering a catalog page without the website's header, footer and assets.
 
 ### Removed

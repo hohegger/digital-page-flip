@@ -6,6 +6,8 @@ return [
     'ctrl' => [
         'title' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook',
         'label' => 'title',
+        'label_alt' => 'valid_from,valid_until',
+        'label_alt_force' => true,
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'delete' => 'deleted',
