@@ -5,7 +5,7 @@ Alle relevanten Änderungen an dieser Extension werden in dieser Datei dokumenti
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
-## [2.1.0] - Unreleased
+## [2.1.0] - 2026-11-17
 
 ### Upgrade notes
 
