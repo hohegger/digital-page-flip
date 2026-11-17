@@ -46,7 +46,19 @@
                         </div>
 
                         <nav class="flipbook-viewer__controls" aria-label="Katalog-Navigation">
-                            <span class="flipbook-viewer__pager" data-flipbook-pager="{flipbook.uid}" aria-live="polite">
+                            <f:comment><!-- Page navigation belongs next to the page number; the script hides it on the first page. --></f:comment>
+                            <button class="flipbook-viewer__first"
+                                    type="button"
+                                    data-flipbook-goto-page="0"
+                                    data-flipbook-uid="{flipbook.uid}"
+                                    hidden>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="m17 18-6-6 6-6"></path>
+                                    <path d="M7 6v12"></path>
+                                </svg>
+                                <f:translate key="pager.first" extensionName="DigitalPageFlip" />
+                            </button>
+                            <span class="flipbook-viewer__pager" data-flipbook-pager="{flipbook.uid}" aria-live="polite" tabindex="-1">
                                 <span data-flipbook-current>1</span> / <span data-flipbook-total>{flipbook.pageCount}</span>
                             </span>
                         </nav>

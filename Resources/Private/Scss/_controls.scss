@@ -6,12 +6,76 @@
 
 .flipbook-viewer {
 
+    // Raster 1fr | auto | 1fr: die Seitenzahl bleibt mittig, auch wenn
+    // "Zum Anfang" auf der ersten Seite ausgeblendet ist.
     &__controls {
         flex: 0 0 auto;
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
         align-items: center;
-        justify-content: center;
+        column-gap: var(--space-lg);
+        width: 100%;
         padding-block-start: var(--space-md);
+    }
+
+    // -----------------------------------------------------------------------
+    // "Zum Anfang"
+    // -----------------------------------------------------------------------
+
+    &__first {
+        @include interactive-base;
+
+        grid-column: 1;
+        justify-self: end;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-xs);
+        box-sizing: border-box;
+        min-height: var(--pager-btn-height);
+        padding: var(--space-xs) var(--space-lg) var(--space-xs) var(--space-sm);
+        font-family: var(--font-system);
+        font-size: 0.8125rem;
+        line-height: 1.2;
+        white-space: nowrap;
+        color: var(--color-text-button);
+        background: var(--color-bg-button);
+        border: 1px solid var(--color-border);
+        border-radius: var(--pager-btn-radius);
+
+        // display: inline-flex wuerde das hidden-Attribut sonst aufheben
+        &[hidden] {
+            display: none;
+        }
+
+        &:hover {
+            color: var(--color-icon-hover);
+            background: var(--color-bg-sidebar);
+        }
+
+        &:focus-visible {
+            @include focus-ring;
+        }
+
+        &:active {
+            background: var(--color-active-bg);
+            transition-duration: 0.05s;
+        }
+
+        svg {
+            flex: none;
+            width: 16px;
+            height: 16px;
+        }
+
+        // Touch: volle Mindest-Klickflaeche
+        @include respond-to($bp-phone) {
+            min-height: var(--pager-btn-height-touch);
+        }
+    }
+
+    // Fokusziel nach "Zum Anfang" auf dem Phone, ohne sichtbaren Rahmen
+    &__pager:focus {
+        outline: none;
     }
 
     // -----------------------------------------------------------------------
@@ -54,6 +118,7 @@
     // -----------------------------------------------------------------------
 
     &__pager {
+        grid-column: 2;
         font-family: var(--font-system);
         font-size: 0.8125rem;
         font-variant-numeric: tabular-nums;

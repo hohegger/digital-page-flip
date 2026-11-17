@@ -146,7 +146,9 @@ Frontend interactions
 =====================
 
 **Navigation:**
-    Previous/next buttons and a page indicator below the flipbook.
+    Previous/next buttons and a page indicator below the flipbook. From the
+    second page on, a "Zum Anfang" button next to the page indicator jumps
+    back to the first page.
 
 **Keyboard:**
     Arrow keys left/right to turn pages.
@@ -155,9 +157,13 @@ Frontend interactions
     Swipe gestures on mobile devices.
 
 **Sidebar:**
-    Vertical toolbar (desktop) or horizontal topbar (tablet/mobile)
-    with: jump to first page, PDF download, home page, privacy policy
-    and imprint links (configurable via TypoScript constants).
+    Vertical toolbar (desktop) or horizontal topbar (tablet/mobile). Every
+    entry shows an icon with a visible label: actions (PDF download, website
+    home page) and, set apart, the privacy policy and imprint links. Entries
+    are configurable via the site settings
+    ``plugin.tx_digitalpageflip.settings.sidebar.*``; without any entry
+    the sidebar is not rendered. On phones the entries share the width in
+    equal columns.
 
 **Mobile:**
     Single-page portrait mode on screens smaller than 768px.

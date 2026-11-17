@@ -24,6 +24,14 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - The record list shows the validity period next to the title (`label_alt` `valid_from,valid_until`).
 - Backend layout `DigitalPageFlipBlank` (set page TSconfig) and page object `lib.digitalPageFlip.blankPage` (`PAGEVIEW`) rendering a catalog page without the website's header, footer and assets.
 
+### Changed
+
+- The sidebar shows a visible label under (desktop) or next to (tablet) every icon instead of tooltips only: "PDF", "Website", "Datenschutz", "Impressum". Privacy and imprint form a separate, quieter group at the bottom (desktop) or on the right (tablet); on phones all entries share the width in equal columns.
+- "Jump to first page" moved from the sidebar to a "Zum Anfang" button next to the page indicator; it is hidden on the first page.
+- Sidebar and pager texts come from `locallang.xlf`; links opening a new tab announce this to screen readers.
+- The sidebar is not rendered when it has no entries (no PDF and no configured links).
+- Removed the CSS class `flipbook-viewer__sidebar-divider` and the sidebar's first-page button: projects overriding `Partials/Flipbook/Sidebar.html` or `Templates/Flipbook/Show.html` should update their copies.
+
 ### Removed
 
 - Unused page template `Resources/Private/Templates/Page/Default.html` (replaced by `Resources/Private/PageView/Pages/DigitalPageFlipBlank.fluid.html`).

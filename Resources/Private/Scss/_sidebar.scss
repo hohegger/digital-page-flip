@@ -1,6 +1,11 @@
 // ==========================================================================
-// Sidebar — vertikale Toolbar (Desktop) / horizontale Topbar (Tablet)
+// Sidebar — vertikale Toolbar (Desktop) / Topbar (Tablet) / Felder (Phone)
 // ==========================================================================
+//
+// Jeder Knopf zeigt Icon + Wort, weil Icons allein mehrdeutig waren und
+// Tooltips auf Touch-Geraeten fehlen. Zwei Gruppen: Aktionen (PDF, Website)
+// und Pflichtangaben (Datenschutz, Impressum, zurueckhaltender gesetzt).
+//
 
 @use 'tokens' as *;
 
@@ -10,18 +15,29 @@
         flex: 0 0 auto;
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
         align-items: center;
-        padding: var(--space-xl) 0.625rem;
+        gap: var(--space-xl);
+        padding: var(--space-xl) var(--space-sm);
         background: var(--color-bg-sidebar);
         border-right: var(--sidebar-border-size) solid var(--color-border);
         box-shadow: var(--shadow-sidebar);
 
         @include respond-to($bp-tablet) {
             flex-direction: row;
-            padding: var(--space-md) var(--space-lg);
+            padding: var(--space-xs) var(--space-lg);
             border-right: none;
             border-bottom: var(--sidebar-border-size) solid var(--color-border);
             box-shadow: var(--shadow-sidebar-top);
+        }
+
+        // Phone: gleich breite Felder ueber beide Gruppen hinweg
+        @include respond-to($bp-phone) {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: 1fr;
+            gap: 0;
+            padding: var(--space-xs) var(--space-sm);
         }
     }
 
@@ -29,27 +45,24 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: var(--space-sm);
+        gap: var(--space-xs);
 
         @include respond-to($bp-tablet) {
             flex-direction: row;
-            gap: var(--space-xs);
         }
-    }
 
-    &__sidebar-divider {
-        width: var(--sidebar-divider-size);
-        height: 0;
-        border: none;
-        border-top: 1px solid var(--color-border-strong);
-        margin: var(--space-md) 0;
+        @include respond-to($bp-phone) {
+            display: contents;
+        }
 
-        @include respond-to($bp-tablet) {
-            width: 0;
-            height: var(--sidebar-divider-size);
-            border-top: none;
-            border-left: 1px solid var(--color-border-strong);
-            margin: 0 var(--space-sm);
+        // Pflichtangaben stehen auch ohne Aktionen-Gruppe unten bzw. rechts
+        &--legal {
+            margin-block-start: auto;
+
+            @include respond-to($bp-tablet) {
+                margin-block-start: 0;
+                margin-inline-start: auto;
+            }
         }
     }
 
@@ -57,11 +70,14 @@
         @include interactive-base;
 
         display: inline-flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: var(--sidebar-btn-size);
-        height: var(--sidebar-btn-size);
-        padding: 0;
+        gap: var(--sidebar-label-gap);
+        box-sizing: border-box;
+        width: var(--sidebar-btn-width);
+        min-height: var(--sidebar-btn-size);
+        padding: var(--space-md) 0 var(--space-sm);
         border-radius: var(--sidebar-radius);
         color: var(--color-icon);
 
@@ -80,8 +96,89 @@
         }
 
         svg {
+            flex: none;
             width: var(--sidebar-icon-size);
             height: var(--sidebar-icon-size);
         }
+
+        @include respond-to($bp-tablet) {
+            flex-direction: row;
+            gap: var(--space-sm);
+            width: auto;
+            padding: var(--space-md) var(--space-lg);
+
+            svg {
+                width: var(--sidebar-icon-size-inline);
+                height: var(--sidebar-icon-size-inline);
+            }
+        }
+
+        @include respond-to($bp-phone) {
+            position: relative;
+            flex-direction: column;
+            gap: var(--sidebar-label-gap);
+            width: auto;
+            padding: var(--space-sm) 0;
+
+            svg {
+                width: var(--sidebar-icon-size);
+                height: var(--sidebar-icon-size);
+            }
+        }
+    }
+
+    &__sidebar-label {
+        font-family: var(--font-system);
+        font-size: var(--sidebar-label-size);
+        font-weight: 500;
+        line-height: 1.2;
+        white-space: nowrap;
+        color: var(--color-sidebar-label);
+        transition: color var(--transition-duration) var(--transition-easing);
+
+        @include respond-to($bp-tablet) {
+            font-size: var(--sidebar-label-size-inline);
+        }
+
+        @include respond-to($bp-phone) {
+            font-size: var(--sidebar-label-size-compact);
+        }
+    }
+
+    &__sidebar-btn:hover &__sidebar-label {
+        color: var(--color-icon-hover);
+    }
+
+    &__sidebar-btn--quiet &__sidebar-label {
+        font-weight: 400;
+        color: var(--color-sidebar-label-quiet);
+    }
+
+    &__sidebar-btn--quiet:hover &__sidebar-label {
+        color: var(--color-icon-hover);
+    }
+
+    // Phone: feiner Strich zwischen Aktionen und Pflichtangaben
+    @include respond-to($bp-phone) {
+        &__sidebar-group + &__sidebar-group--legal > &__sidebar-btn:first-child::before {
+            content: '';
+            position: absolute;
+            top: var(--space-lg);
+            bottom: var(--space-lg);
+            left: 0;
+            border-left: 1px solid var(--color-sidebar-separator);
+        }
+    }
+
+    &__sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
     }
 }

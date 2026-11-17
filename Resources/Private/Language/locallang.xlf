@@ -12,6 +12,27 @@
             <trans-unit id="flipbook.loading" resname="flipbook.loading">
                 <source>Katalog wird geladen…</source>
             </trans-unit>
+            <trans-unit id="sidebar.label" resname="sidebar.label">
+                <source>Katalog-Werkzeuge</source>
+            </trans-unit>
+            <trans-unit id="sidebar.pdf" resname="sidebar.pdf">
+                <source>PDF</source>
+            </trans-unit>
+            <trans-unit id="sidebar.website" resname="sidebar.website">
+                <source>Website</source>
+            </trans-unit>
+            <trans-unit id="sidebar.privacy" resname="sidebar.privacy">
+                <source>Datenschutz</source>
+            </trans-unit>
+            <trans-unit id="sidebar.imprint" resname="sidebar.imprint">
+                <source>Impressum</source>
+            </trans-unit>
+            <trans-unit id="sidebar.newTab" resname="sidebar.newTab">
+                <source>(öffnet in neuem Tab)</source>
+            </trans-unit>
+            <trans-unit id="pager.first" resname="pager.first">
+                <source>Zum Anfang</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
