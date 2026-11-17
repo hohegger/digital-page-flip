@@ -1,117 +1,70 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<aside class="flipbook-viewer__sidebar" aria-label="Katalog-Werkzeuge">
-    <div class="flipbook-viewer__sidebar-group">
-        <button class="flipbook-viewer__sidebar-btn"
-                type="button"
-                data-flipbook-goto-page="0"
-                data-flipbook-uid="{flipbook.uid}"
-                title="Zur ersten Seite"
-                aria-label="Zur ersten Seite">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <polyline points="11 17 6 12 11 7"></polyline>
-                <line x1="6" y1="12" x2="18" y2="12"></line>
-                <line x1="18" y1="6" x2="18" y2="18"></line>
-            </svg>
-        </button>
-    </div>
+<f:comment><!-- Visible labels instead of tooltips: icons alone were ambiguous and tooltips do not exist on touch devices. --></f:comment>
+<f:variable name="hasActions" value="{f:if(condition: '{flipbook.pdfFile} || {settings.sidebar.homePageUid}', then: 1, else: 0)}" />
+<f:variable name="hasLegal" value="{f:if(condition: '{settings.sidebar.privacyPageUid} || {settings.sidebar.imprintPageUid}', then: 1, else: 0)}" />
 
-    <f:if condition="{flipbook.pdfFile}">
-        <hr class="flipbook-viewer__sidebar-divider" />
-        <div class="flipbook-viewer__sidebar-group">
-            <a class="flipbook-viewer__sidebar-btn"
-               href="{flipbook.pdfFile.originalResource.publicUrl}"
-               download="{flipbook.title}.pdf"
-               title="PDF herunterladen"
-               aria-label="PDF herunterladen">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-            </a>
-        </div>
-    </f:if>
-
-    <f:if condition="{settings.sidebar.homePageUid}">
-        <f:then>
-            <hr class="flipbook-viewer__sidebar-divider" />
+<f:if condition="{hasActions} || {hasLegal}">
+    <aside class="flipbook-viewer__sidebar" aria-label="{f:translate(key: 'sidebar.label', extensionName: 'DigitalPageFlip')}">
+        <f:if condition="{hasActions}">
             <div class="flipbook-viewer__sidebar-group">
-                <a class="flipbook-viewer__sidebar-btn"
-                   href="{f:uri.page(pageUid: settings.sidebar.homePageUid)}"
-                   title="Startseite"
-                   aria-label="Startseite">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                    </svg>
-                </a>
-
-                <f:if condition="{settings.sidebar.privacyPageUid}">
+                <f:if condition="{flipbook.pdfFile}">
                     <a class="flipbook-viewer__sidebar-btn"
+                       href="{flipbook.pdfFile.originalResource.publicUrl}"
+                       download="{flipbook.title}.pdf">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <span class="flipbook-viewer__sidebar-label"><f:translate key="sidebar.pdf" extensionName="DigitalPageFlip" /></span>
+                    </a>
+                </f:if>
+                <f:if condition="{settings.sidebar.homePageUid}">
+                    <a class="flipbook-viewer__sidebar-btn"
+                       href="{f:uri.page(pageUid: settings.sidebar.homePageUid)}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span class="flipbook-viewer__sidebar-label"><f:translate key="sidebar.website" extensionName="DigitalPageFlip" /></span>
+                    </a>
+                </f:if>
+            </div>
+        </f:if>
+
+        <f:if condition="{hasLegal}">
+            <div class="flipbook-viewer__sidebar-group flipbook-viewer__sidebar-group--legal">
+                <f:if condition="{settings.sidebar.privacyPageUid}">
+                    <a class="flipbook-viewer__sidebar-btn flipbook-viewer__sidebar-btn--quiet"
                        href="{f:uri.page(pageUid: settings.sidebar.privacyPageUid)}"
                        target="_blank"
-                       rel="noopener"
-                       title="Datenschutz"
-                       aria-label="Datenschutz">
+                       rel="noopener">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                         </svg>
+                        <span class="flipbook-viewer__sidebar-label"><f:translate key="sidebar.privacy" extensionName="DigitalPageFlip" /></span>
+                        <span class="flipbook-viewer__sr-only"> <f:translate key="sidebar.newTab" extensionName="DigitalPageFlip" /></span>
                     </a>
                 </f:if>
-
                 <f:if condition="{settings.sidebar.imprintPageUid}">
-                    <a class="flipbook-viewer__sidebar-btn"
+                    <a class="flipbook-viewer__sidebar-btn flipbook-viewer__sidebar-btn--quiet"
                        href="{f:uri.page(pageUid: settings.sidebar.imprintPageUid)}"
                        target="_blank"
-                       rel="noopener"
-                       title="Impressum"
-                       aria-label="Impressum">
+                       rel="noopener">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <circle cx="12" cy="12" r="10"></circle>
                             <line x1="12" y1="16" x2="12" y2="12"></line>
                             <line x1="12" y1="8" x2="12.01" y2="8"></line>
                         </svg>
+                        <span class="flipbook-viewer__sidebar-label"><f:translate key="sidebar.imprint" extensionName="DigitalPageFlip" /></span>
+                        <span class="flipbook-viewer__sr-only"> <f:translate key="sidebar.newTab" extensionName="DigitalPageFlip" /></span>
                     </a>
                 </f:if>
             </div>
-        </f:then>
-        <f:else>
-            <f:if condition="{settings.sidebar.privacyPageUid} || {settings.sidebar.imprintPageUid}">
-                <hr class="flipbook-viewer__sidebar-divider" />
-                <div class="flipbook-viewer__sidebar-group">
-                    <f:if condition="{settings.sidebar.privacyPageUid}">
-                        <a class="flipbook-viewer__sidebar-btn"
-                           href="{f:uri.page(pageUid: settings.sidebar.privacyPageUid)}"
-                           target="_blank"
-                           rel="noopener"
-                           title="Datenschutz"
-                           aria-label="Datenschutz">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            </svg>
-                        </a>
-                    </f:if>
-
-                    <f:if condition="{settings.sidebar.imprintPageUid}">
-                        <a class="flipbook-viewer__sidebar-btn"
-                           href="{f:uri.page(pageUid: settings.sidebar.imprintPageUid)}"
-                           target="_blank"
-                           rel="noopener"
-                           title="Impressum"
-                           aria-label="Impressum">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="16" x2="12" y2="12"></line>
-                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                            </svg>
-                        </a>
-                    </f:if>
-                </div>
-            </f:if>
-        </f:else>
-    </f:if>
-</aside>
+        </f:if>
+    </aside>
+</f:if>
 
 </html>

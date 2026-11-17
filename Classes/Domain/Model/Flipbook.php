@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kit\DigitalPageFlip\Domain\Model;
 
+use DateTime;
+use Kit\DigitalPageFlip\Domain\Validity\ValidityCalculator;
 use TYPO3\CMS\Extbase\Attribute\ORM\Cascade;
 use TYPO3\CMS\Extbase\Attribute\ORM\Lazy;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
@@ -33,6 +35,14 @@ final class Flipbook extends AbstractEntity
     protected int $pageCount = 0;
 
     protected int $conversionStatus = self::STATUS_PENDING;
+
+    protected ?DateTime $validFrom = null;
+
+    protected ?DateTime $validUntil = null;
+
+    protected int $leadDays = 2;
+
+    protected string $weekLabel = '';
 
     public function __construct()
     {
@@ -118,5 +128,60 @@ final class Flipbook extends AbstractEntity
     public function setConversionStatus(int $conversionStatus): void
     {
         $this->conversionStatus = $conversionStatus;
+    }
+
+    public function getValidFrom(): ?DateTime
+    {
+        return $this->validFrom;
+    }
+
+    public function setValidFrom(?DateTime $validFrom): void
+    {
+        $this->validFrom = $validFrom;
+    }
+
+    public function getValidUntil(): ?DateTime
+    {
+        return $this->validUntil;
+    }
+
+    public function setValidUntil(?DateTime $validUntil): void
+    {
+        $this->validUntil = $validUntil;
+    }
+
+    public function getLeadDays(): int
+    {
+        return $this->leadDays;
+    }
+
+    public function setLeadDays(int $leadDays): void
+    {
+        $this->leadDays = $leadDays;
+    }
+
+    public function getWeekLabel(): string
+    {
+        return $this->weekLabel;
+    }
+
+    public function setWeekLabel(string $weekLabel): void
+    {
+        $this->weekLabel = $weekLabel;
+    }
+
+    /**
+     * Manual week label if set, otherwise calculated from the validity period ('' without validFrom).
+     */
+    public function getEffectiveWeekLabel(): string
+    {
+        if ($this->weekLabel !== '') {
+            return $this->weekLabel;
+        }
+        if ($this->validFrom === null) {
+            return '';
+        }
+
+        return ValidityCalculator::weekLabel($this->validFrom, $this->validUntil);
     }
 }

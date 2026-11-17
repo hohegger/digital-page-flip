@@ -6,6 +6,8 @@ return [
     'ctrl' => [
         'title' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook',
         'label' => 'title',
+        'label_alt' => 'valid_from,valid_until',
+        'label_alt_force' => true,
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'delete' => 'deleted',
@@ -24,11 +26,18 @@ return [
             'showitem' => '
                 --div--;core.form.tabs:general,
                     title, description, pdf_file,
+                    --palette--;LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook.palette.validity;validity,
                 --div--;core.form.tabs:access,
                     hidden, starttime, endtime,
                 --div--;Pages,
                     pages, page_count, conversion_status,
             ',
+        ],
+    ],
+    'palettes' => [
+        'validity' => [
+            'label' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook.palette.validity',
+            'showitem' => 'valid_from, valid_until, --linebreak--, lead_days, week_label',
         ],
     ],
     'columns' => [
@@ -48,6 +57,7 @@ return [
         ],
         'starttime' => [
             'exclude' => true,
+            'displayCond' => 'FIELD:valid_from:=:0',
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => [
                 'type' => 'datetime',
@@ -57,6 +67,7 @@ return [
         ],
         'endtime' => [
             'exclude' => true,
+            'displayCond' => 'FIELD:valid_from:=:0',
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => [
                 'type' => 'datetime',
@@ -95,6 +106,53 @@ return [
                 'type' => 'file',
                 'maxitems' => 1,
                 'allowed' => 'pdf',
+            ],
+        ],
+        'valid_from' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook.valid_from',
+            'description' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook.valid_from.description',
+            'onChange' => 'reload',
+            'config' => [
+                'type' => 'datetime',
+                'format' => 'date',
+                'default' => 0,
+                'searchable' => false,
+            ],
+        ],
+        'valid_until' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook.valid_until',
+            'config' => [
+                'type' => 'datetime',
+                'format' => 'date',
+                'default' => 0,
+                'searchable' => false,
+            ],
+        ],
+        'lead_days' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook.lead_days',
+            'description' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook.lead_days.description',
+            'config' => [
+                'type' => 'number',
+                'size' => 5,
+                'default' => 2,
+                'range' => [
+                    'lower' => 0,
+                    'upper' => 14,
+                ],
+            ],
+        ],
+        'week_label' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook.week_label',
+            'description' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tx_digitalpageflip_domain_model_flipbook.week_label.description',
+            'config' => [
+                'type' => 'input',
+                'size' => 20,
+                'max' => 32,
+                'eval' => 'trim',
             ],
         ],
         'pages' => [

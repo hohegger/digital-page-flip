@@ -33,3 +33,28 @@ plugin.tx_digitalpageflip {
     sidebar.homePageUid = {$plugin.tx_digitalpageflip.settings.sidebar.homePageUid}
   }
 }
+
+# Leeres Seitenobjekt fuer Seiten mit dem Backend-Layout "DigitalPageFlipBlank":
+# nur HTML-Grundgeruest (Titel, Viewport) und die Inhaltsspalte "main"; CSS/JS
+# bringt das Inhaltselement selbst mit (AssetCollector). Die Website schaltet es
+# in ihrem eigenen Setup (nach ihrer page-Definition) per Bedingung ein:
+#   [tree.pagelayout == "pagets__DigitalPageFlipBlank"]
+#   page >
+#   page < lib.digitalPageFlip.blankPage
+#   [END]
+lib.digitalPageFlip.blankPage = PAGE
+lib.digitalPageFlip.blankPage {
+    typeNum = 0
+
+    meta {
+        viewport = width=device-width, initial-scale=1, viewport-fit=cover
+        robots = index,follow
+    }
+
+    10 = PAGEVIEW
+    10 {
+        paths {
+            0 = EXT:digital_page_flip/Resources/Private/PageView/
+        }
+    }
+}

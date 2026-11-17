@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kit\DigitalPageFlip\Service;
 
 use FilesystemIterator;
+use Kit\DigitalPageFlip\Domain\Current\CurrentFlipbookResolver;
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Domain\Model\Page;
 use Kit\DigitalPageFlip\Domain\Repository\FlipbookRepository;
@@ -14,6 +15,7 @@ use RecursiveIteratorIterator;
 use RuntimeException;
 use SplFileInfo;
 use Throwable;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior;
@@ -40,6 +42,7 @@ final readonly class PdfConversionService
         private PersistenceManager $persistenceManager,
         private FlipbookCleanupService $cleanupService,
         private LoggerInterface $logger,
+        private CacheManager $cacheManager,
     ) {}
     /**
      * Converts a PDF attached to the given flipbook into page images (WebP + PNG fallback).
@@ -135,6 +138,9 @@ final readonly class PdfConversionService
             $this->flipbookRepository->update($flipbook);
             $this->persistenceManager->persistAll();
 
+            // Only after the completed status is persisted, so re-rendered pages see it.
+            $this->flushPageCache($flipbook);
+
             $this->logger->info('PDF conversion completed successfully.', [
                 'flipbookUid' => $flipbook->getUid(),
                 'pageCount' => $pageCount,
@@ -155,6 +161,21 @@ final readonly class PdfConversionService
             if ($tempDir !== '' && is_dir($tempDir)) {
                 $this->cleanupTempDirectory($tempDir);
             }
+        }
+    }
+    /**
+     * Flushes pages showing the current flipbook. A failure is only logged:
+     * the conversion is already completed and must not be flagged as failed.
+     */
+    private function flushPageCache(Flipbook $flipbook): void
+    {
+        try {
+            $this->cacheManager->flushCachesInGroupByTags('pages', [CurrentFlipbookResolver::CACHE_TAG]);
+        } catch (Throwable $e) {
+            $this->logger->warning('Page cache flush after PDF conversion failed.', [
+                'flipbookUid' => $flipbook->getUid(),
+                'error' => $e->getMessage(),
+            ]);
         }
     }
     /**

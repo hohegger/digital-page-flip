@@ -195,6 +195,8 @@ document.querySelectorAll<HTMLElement>('.flipbook-viewer__book').forEach((contai
   const nextBtn = document.querySelector<HTMLButtonElement>(`[data-flipbook-next="${uid}"]`);
   const currentPageEl = viewer?.querySelector<HTMLElement>('[data-flipbook-current]');
   const totalEl = viewer?.querySelector<HTMLElement>('[data-flipbook-total]');
+  const firstBtn = viewer?.querySelector<HTMLButtonElement>('.flipbook-viewer__first');
+  const pagerEl = viewer?.querySelector<HTMLElement>('[data-flipbook-pager]');
 
   if (totalEl) {
     totalEl.textContent = String(pages.length);
@@ -212,6 +214,15 @@ document.querySelectorAll<HTMLElement>('.flipbook-viewer__book').forEach((contai
     }
     if (nextBtn) {
       nextBtn.disabled = current >= total - 1;
+    }
+    if (firstBtn) {
+      const onFirstPage = current <= 0;
+      // Keep keyboard focus inside the viewer when the focused button disappears;
+      // on phones the arrows are hidden, so the (aria-live) pager takes focus
+      if (onFirstPage && document.activeElement === firstBtn) {
+        (nextBtn?.offsetParent ? nextBtn : pagerEl)?.focus();
+      }
+      firstBtn.hidden = onFirstPage;
     }
   };
 

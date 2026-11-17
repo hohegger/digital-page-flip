@@ -1,0 +1,26 @@
+# Leeres Backend-Layout fuer die Katalogseite: nur der Flipbook-Viewer, ohne
+# Header/Footer der Website. Gerendert von lib.digitalPageFlip.blankPage
+# (setup.typoscript), Bezeichner im Frontend: pagets__DigitalPageFlipBlank.
+mod.web_layout.BackendLayouts {
+    DigitalPageFlipBlank {
+        title = LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:backend_layout.blank
+        icon = EXT:digital_page_flip/Resources/Public/Icons/Extension.svg
+        config {
+            backend_layout {
+                colCount = 1
+                rowCount = 1
+                rows {
+                    1 {
+                        columns {
+                            1 {
+                                name = LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:backend_layout.blank.main
+                                colPos = 0
+                                identifier = main
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -57,6 +57,34 @@ settings.
 3. Place the **Digital Page Flip** content element on any page
 4. The interactive flipbook is rendered in the frontend
 
+### Validity and automatic mode
+
+Flipbooks have a validity period: `valid_from`, `valid_until` (empty = from + 13
+days), `lead_days` (default `2`, days online before `valid_from`) and a
+`week_label` (generated as e.g. `12_13`; a manual value wins). Setting
+`valid_from` derives the online start (00:00 of `valid_from` minus `lead_days`).
+
+The **current** flipbook is the one with the latest online start not in the
+future among visible, fully converted records with `valid_from` set in the
+configured `storagePid` (0 = all). In the content element, set **Anzeige** to
+*Aktuellen Handzettel automatisch anzeigen* to always show it. If there is
+none, a short notice ("Derzeit ist kein Katalog verfügbar.") with the configured
+imprint/privacy links is shown instead of the viewer.
+
+Page caches are tagged and expire at the next online start, so the switch needs
+no manual cache flush.
+
+### ViewHelper
+
+```html
+<html xmlns:dpf="http://typo3.org/ns/Kit/DigitalPageFlip/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:variable name="handout" value="{dpf:currentFlipbook()}" />
+<f:if condition="{handout}">{handout.title} ({handout.weekLabel})</f:if>
+```
+
+Arguments: `upcoming` (bool, next scheduled flipbook) and `pageUid` (site lookup
+without frontend request, e.g. backend preview). Returns `null` if none.
+
 See the [full documentation](Documentation/Index.rst) for detailed instructions.
 
 ## Requirements

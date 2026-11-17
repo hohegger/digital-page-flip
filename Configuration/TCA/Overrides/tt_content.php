@@ -16,8 +16,29 @@ ExtensionUtility::registerPlugin(
 );
 
 // Define the custom flipbook selection field on tt_content
+$GLOBALS['TCA']['tt_content']['columns']['tx_digitalpageflip_mode'] = [
+    'label' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tt_content.tx_digitalpageflip_mode',
+    'onChange' => 'reload',
+    'config' => [
+        'type' => 'select',
+        'renderType' => 'selectSingle',
+        'default' => 0,
+        'items' => [
+            [
+                'label' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tt_content.tx_digitalpageflip_mode.0',
+                'value' => 0,
+            ],
+            [
+                'label' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tt_content.tx_digitalpageflip_mode.1',
+                'value' => 1,
+            ],
+        ],
+    ],
+];
+
 $GLOBALS['TCA']['tt_content']['columns']['tx_digitalpageflip_flipbook'] = [
     'label' => 'LLL:EXT:digital_page_flip/Resources/Private/Language/locallang_db.xlf:tt_content.tx_digitalpageflip_flipbook',
+    'displayCond' => 'FIELD:tx_digitalpageflip_mode:=:0',
     'config' => [
         'type' => 'group',
         'allowed' => 'tx_digitalpageflip_domain_model_flipbook',
@@ -32,6 +53,7 @@ $GLOBALS['TCA']['tt_content']['types']['digitalpageflip_flipbook'] = [
         '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
         '--palette--;;general',
         'header',
+        'tx_digitalpageflip_mode',
         'tx_digitalpageflip_flipbook',
         '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access',
         '--palette--;;hidden',

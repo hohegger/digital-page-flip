@@ -21,11 +21,15 @@ final class FlipbookRepository extends Repository
     }
 
     /**
+     * Pending or failed conversions, including hidden and scheduled records, so a
+     * flipbook is ready before its online start. Deleted records stay excluded.
+     *
      * @return QueryResultInterface<int, Flipbook>
      */
     public function findPending(): QueryResultInterface
     {
         $query = $this->createQuery();
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
         $query->matching(
             $query->logicalOr(
                 $query->equals('conversionStatus', Flipbook::STATUS_PENDING),
@@ -34,5 +38,21 @@ final class FlipbookRepository extends Repository
         );
 
         return $query->execute();
+    }
+
+    /**
+     * Looks up a flipbook for conversion regardless of hidden/starttime/endtime (deleted stays excluded).
+     */
+    public function findByUidForConversion(int $uid): ?Flipbook
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()
+            ->setIgnoreEnableFields(true)
+            ->setRespectStoragePage(false);
+        $query->matching($query->equals('uid', $uid));
+
+        $flipbook = $query->execute()->getFirst();
+
+        return $flipbook instanceof Flipbook ? $flipbook : null;
     }
 }

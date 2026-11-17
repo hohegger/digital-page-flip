@@ -9,7 +9,7 @@
         <f:then>
             <p>Der Katalog wird derzeit vorbereitet. Bitte versuchen Sie es später erneut.</p>
         </f:then>
-        <f:else>
+        <f:else if="{flipbook}">
             <section class="flipbook-viewer" aria-label="{flipbook.title}">
                 <div class="flipbook-viewer__main">
                     <f:render partial="Flipbook/Sidebar" arguments="{flipbook: flipbook, settings: settings}" />
@@ -46,13 +46,39 @@
                         </div>
 
                         <nav class="flipbook-viewer__controls" aria-label="Katalog-Navigation">
-                            <span class="flipbook-viewer__pager" data-flipbook-pager="{flipbook.uid}" aria-live="polite">
+                            <f:comment><!-- Page navigation belongs next to the page number; the script hides it on the first page. --></f:comment>
+                            <button class="flipbook-viewer__first"
+                                    type="button"
+                                    data-flipbook-goto-page="0"
+                                    data-flipbook-uid="{flipbook.uid}"
+                                    hidden>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="m17 18-6-6 6-6"></path>
+                                    <path d="M7 6v12"></path>
+                                </svg>
+                                <f:translate key="pager.first" extensionName="DigitalPageFlip" />
+                            </button>
+                            <span class="flipbook-viewer__pager" data-flipbook-pager="{flipbook.uid}" aria-live="polite" tabindex="-1">
                                 <span data-flipbook-current>1</span> / <span data-flipbook-total>{flipbook.pageCount}</span>
                             </span>
                         </nav>
                     </div>
                 </div>
             </section>
+        </f:else>
+        <f:else>
+            <f:comment><!-- No flipbook (none selected or none current): neutral notice instead of an error. --></f:comment>
+            <p>Derzeit ist kein Katalog verfügbar.</p>
+            <f:if condition="{settings.sidebar.imprintPageUid} || {settings.sidebar.privacyPageUid}">
+                <nav aria-label="Rechtliche Hinweise">
+                    <f:if condition="{settings.sidebar.imprintPageUid}">
+                        <a href="{f:uri.page(pageUid: settings.sidebar.imprintPageUid)}">Impressum</a>
+                    </f:if>
+                    <f:if condition="{settings.sidebar.privacyPageUid}">
+                        <a href="{f:uri.page(pageUid: settings.sidebar.privacyPageUid)}">Datenschutz</a>
+                    </f:if>
+                </nav>
+            </f:if>
         </f:else>
     </f:if>
 </f:section>

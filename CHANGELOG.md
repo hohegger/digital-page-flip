@@ -5,6 +5,46 @@ Alle relevanten Änderungen an dieser Extension werden in dieser Datei dokumenti
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [2.1.0] - 2026-11-17
+
+### Upgrade notes
+
+- New database columns `valid_from`, `valid_until`, `lead_days` and `week_label` in `tx_digitalpageflip_domain_model_flipbook` and `tx_digitalpageflip_mode` in `tt_content`: run the database schema update (Admin Tools > Maintenance > Analyze Database Structure, or `vendor/bin/typo3 database:updateschema`).
+- The blank page layout `DigitalPageFlipBlank` only takes effect if the site package switches the page object with the TypoScript condition `[tree.pagelayout == "pagets__DigitalPageFlipBlank"]` at the end of its setup (see `Documentation/Usage.rst`, "Catalog page without the website layout").
+
+### Added
+
+- Flipbook validity fields `valid_from`, `valid_until`, `lead_days` (default 2) and `week_label` (generated from the ISO calendar weeks, manual value wins).
+- The online start (`starttime`) is derived on save from `valid_from` minus `lead_days`.
+- `CurrentFlipbookResolver` service selecting the current and upcoming flipbook (completed conversions only, optional `storagePid`).
+- Page cache is tagged and its lifetime capped at the next online start; saving flipbooks flushes the tag.
+- Content element mode "Anzeige": show the current flipbook automatically (`tx_digitalpageflip_mode`).
+- `currentFlipbook` Fluid ViewHelper (`upcoming`, `pageUid`) exposing the current or upcoming flipbook to other templates.
+- Backend form: `valid_from` reloads the form on change (switches between automatic and manual start/stop) and explains its effect; `week_label` lists the allowed characters.
+- The record list shows the validity period next to the title (`label_alt` `valid_from,valid_until`).
+- Backend layout `DigitalPageFlipBlank` (set page TSconfig) and page object `lib.digitalPageFlip.blankPage` (`PAGEVIEW`) rendering a catalog page without the website's header, footer and assets.
+
+### Changed
+
+- The sidebar shows a visible label under (desktop) or next to (tablet) every icon instead of tooltips only: "PDF", "Website", "Datenschutz", "Impressum". Privacy and imprint form a separate, quieter group at the bottom (desktop) or on the right (tablet); on phones all entries share the width in equal columns.
+- "Jump to first page" moved from the sidebar to a "Zum Anfang" button next to the page indicator; it is hidden on the first page.
+- Sidebar and pager texts come from `locallang.xlf`; links opening a new tab announce this to screen readers.
+- The sidebar is not rendered when it has no entries (no PDF and no configured links).
+- Removed the CSS class `flipbook-viewer__sidebar-divider` and the sidebar's first-page button: projects overriding `Partials/Flipbook/Sidebar.html` or `Templates/Flipbook/Show.html` should update their copies.
+
+### Removed
+
+- Unused page template `Resources/Private/Templates/Page/Default.html` (replaced by `Resources/Private/PageView/Pages/DigitalPageFlipBlank.fluid.html`).
+
+### Fixed
+
+- `digitalpageflip:convert` now also converts hidden and scheduled flipbooks (future online start), so a prepared catalog is ready when it goes online; deleted records stay excluded.
+- The content element no longer fails (HTTP 500) when there is no flipbook to show (none selected, or no current flipbook in auto mode); it renders a short notice with the configured imprint/privacy links.
+- A failing page cache flush after a conversion is logged as a warning and no longer turns the completed conversion into status *Error*.
+- The page cache lifetime is capped at the next online start rounded up to the full minute, matching the minute-based access time of the start time restriction.
+- DataHandler runs on the CLI (scheduler, imports) no longer crash after saving a flipbook: the conversion flash message is not stored in the (missing) backend session there.
+- Documentation no longer claims that an overview of all catalogs is shown when no flipbook is selected.
+
 ## [2.0.0] - 2026-07-16
 
 ### Changed

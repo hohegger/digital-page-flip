@@ -36,6 +36,30 @@
             <trans-unit id="tx_digitalpageflip_domain_model_flipbook.conversion_status.error" resname="tx_digitalpageflip_domain_model_flipbook.conversion_status.error">
                 <source>Fehler</source>
             </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.palette.validity" resname="tx_digitalpageflip_domain_model_flipbook.palette.validity">
+                <source>Gültigkeit</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.valid_from" resname="tx_digitalpageflip_domain_model_flipbook.valid_from">
+                <source>Gültig von</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.valid_from.description" resname="tx_digitalpageflip_domain_model_flipbook.valid_from.description">
+                <source>Erforderlich für die automatische Anzeige. Ohne Datum wird der Handzettel nur über Start/Stopp gesteuert.</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.valid_until" resname="tx_digitalpageflip_domain_model_flipbook.valid_until">
+                <source>Gültig bis</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.lead_days" resname="tx_digitalpageflip_domain_model_flipbook.lead_days">
+                <source>Vorlauf (Tage)</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.lead_days.description" resname="tx_digitalpageflip_domain_model_flipbook.lead_days.description">
+                <source>Tage vor „gültig von“, an denen der Handzettel online geht. Online ab = gültig von − Vorlauf.</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.week_label" resname="tx_digitalpageflip_domain_model_flipbook.week_label">
+                <source>Kalenderwochen-Bezeichnung</source>
+            </trans-unit>
+            <trans-unit id="tx_digitalpageflip_domain_model_flipbook.week_label.description" resname="tx_digitalpageflip_domain_model_flipbook.week_label.description">
+                <source>Leer = automatisch. Erlaubt: Buchstaben, Ziffern, Leerzeichen und _ . / - –</source>
+            </trans-unit>
             <trans-unit id="tx_digitalpageflip_domain_model_page" resname="tx_digitalpageflip_domain_model_page">
                 <source>Seite</source>
             </trans-unit>
@@ -61,6 +85,21 @@
                 <source>Zeigt ein blätterbares Flipbook aus einem PDF-Katalog an.</source>
             </trans-unit>
             <trans-unit id="tt_content.tx_digitalpageflip_flipbook" resname="tt_content.tx_digitalpageflip_flipbook">
+                <source>Flipbook</source>
+            </trans-unit>
+            <trans-unit id="tt_content.tx_digitalpageflip_mode" resname="tt_content.tx_digitalpageflip_mode">
+                <source>Anzeige</source>
+            </trans-unit>
+            <trans-unit id="tt_content.tx_digitalpageflip_mode.0" resname="tt_content.tx_digitalpageflip_mode.0">
+                <source>Ausgewählter Handzettel</source>
+            </trans-unit>
+            <trans-unit id="tt_content.tx_digitalpageflip_mode.1" resname="tt_content.tx_digitalpageflip_mode.1">
+                <source>Aktuellen Handzettel automatisch anzeigen</source>
+            </trans-unit>
+            <trans-unit id="backend_layout.blank" resname="backend_layout.blank">
+                <source>Flipbook (leere Seite)</source>
+            </trans-unit>
+            <trans-unit id="backend_layout.blank.main" resname="backend_layout.blank.main">
                 <source>Flipbook</source>
             </trans-unit>
         </body>

@@ -14,6 +14,10 @@ services:
   Kit\DigitalPageFlip\Service\FlipbookCleanupService:
     public: true
 
+  # Used from Fluid ViewHelpers and other extensions
+  Kit\DigitalPageFlip\Domain\Current\CurrentFlipbookResolver:
+    public: true
+
   Kit\DigitalPageFlip\EventListener\AfterFileAddedListener:
     tags:
       - name: event.listener

@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Kit\DigitalPageFlip\Controller;
 
+use Kit\DigitalPageFlip\Domain\Current\CurrentFlipbookResolver;
 use Kit\DigitalPageFlip\Domain\Model\Flipbook;
 use Kit\DigitalPageFlip\Domain\Repository\FlipbookRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Page\AssetCollector;
+use TYPO3\CMS\Core\Site\Entity\SiteInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
@@ -20,15 +22,24 @@ final class FlipbookController extends ActionController
         private readonly FlipbookRepository $flipbookRepository,
         private readonly AssetCollector $assetCollector,
         private readonly LoggerInterface $logger,
+        private readonly CurrentFlipbookResolver $currentFlipbookResolver,
     ) {}
 
     public function showAction(): ResponseInterface
     {
         $contentData = $this->request->getAttribute('currentContentObject')->data ?? [];
-        $flipbookUid = (int) ($contentData['tx_digitalpageflip_flipbook'] ?? 0);
+        $currentUid = null;
+        if (self::isAutoMode($contentData)) {
+            $site = $this->request->getAttribute('site');
+            if ($site instanceof SiteInterface) {
+                $currentUid = $this->currentFlipbookResolver->resolveCurrentUid($site, $this->request);
+            }
+        }
+        $flipbookUid = self::resolveFlipbookUid($contentData, $currentUid);
         $flipbook = $this->flipbookRepository->findByUid($flipbookUid);
 
         if (!$flipbook instanceof Flipbook) {
+            $this->view->assign('noFlipbook', true);
             return $this->htmlResponse();
         }
 
@@ -45,6 +56,28 @@ final class FlipbookController extends ActionController
         $this->view->assign('flipbook', $flipbook);
 
         return $this->htmlResponse();
+    }
+
+    /**
+     * Decides which flipbook to show: the editor's selection, or in auto mode the current one (0 = none).
+     *
+     * @param array<string, mixed> $contentData
+     */
+    public static function resolveFlipbookUid(array $contentData, ?int $currentUid): int
+    {
+        if (self::isAutoMode($contentData)) {
+            return $currentUid ?? 0;
+        }
+
+        return (int) ($contentData['tx_digitalpageflip_flipbook'] ?? 0);
+    }
+
+    /**
+     * @param array<string, mixed> $contentData
+     */
+    private static function isAutoMode(array $contentData): bool
+    {
+        return (int) ($contentData['tx_digitalpageflip_mode'] ?? 0) === 1;
     }
 
     private function injectViteAssets(): void
